@@ -6,8 +6,6 @@ import org.specs2.concurrent.ExecutionEnv
 
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent._
-import scala.concurrent.duration._
 import slick.dbio.DBIO
 import slick.lifted.{Tag, TableQuery}
 
