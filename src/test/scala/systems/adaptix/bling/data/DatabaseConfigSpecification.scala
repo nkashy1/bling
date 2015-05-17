@@ -35,7 +35,8 @@ class DatabaseConfigSpecification extends Specification with AfterAll {
     db.close()
   }
 
-  "bling should be able to connect to a database, create a table, insert some values, and make a query." >> {implicit ee: ExecutionEnv =>
+  "bling should be able to connect to and manipulate a database specified in application.conf using the Slick configuration format." >> {
+    implicit ee: ExecutionEnv =>
     val entries = Seq(
       TestDatum(None, "Alice"),
       TestDatum(None, "Bob"),
