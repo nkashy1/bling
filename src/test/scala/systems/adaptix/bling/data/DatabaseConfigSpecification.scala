@@ -12,7 +12,7 @@ import slick.lifted.{Tag, TableQuery}
 /**
  * Created by nkashyap on 5/15/15.
  */
-class DatabaseConfigSpecification extends Specification with AfterAll {
+class DatabaseConfigSpecification extends Specification with AfterEach {
   val db = Database.forConfig("blingtestdb")
 
   case class TestDatum(key: Option[Int], value: String)
@@ -26,9 +26,9 @@ class DatabaseConfigSpecification extends Specification with AfterAll {
   val setup = DBIO.seq(
     test.schema.create
   )
-  db.run(setup)
+  val creation = db.run(setup)
 
-  def afterAll = {
+  def after = {
     db.run(test.schema.drop)
     db.close()
   }
@@ -48,7 +48,7 @@ class DatabaseConfigSpecification extends Specification with AfterAll {
     )
     val selectQuery = for(pair <- test) yield pair
 
-    val insertion = db.run(insertions)
+    val insertion = creation flatMap {_ => db.run(insertions)}
     val selection = insertion flatMap {_ => db.run(selectQuery.result)}
     val expectedResult = Vector(
       TestDatum(Some(1), "Alice"),
