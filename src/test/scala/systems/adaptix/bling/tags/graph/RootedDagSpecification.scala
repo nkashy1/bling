@@ -91,7 +91,7 @@ class RootedDagSpecification extends Specification {
       components must haveSize(2)
     }
 
-    "Example 6: Vertices A, B, C, D, E. A has B and C as children. B has C and D as children. C has D and E as children. D has C and B as children. Three strongly connected components." >> {
+    "Example 6: Vertices A, B, C, D, E. A is root. A has B and C as children. B has C and D as children. C has D and E as children. D has C and B as children. Three strongly connected components." >> {
       val A = DagVertex("A")
       val B = DagVertex("B")
       val C = DagVertex("C")
@@ -104,6 +104,25 @@ class RootedDagSpecification extends Specification {
       val rootedDag = new RootedDag(A)
       val components = rootedDag.stronglyConnectedComponents
       components must haveSize(3)
+    }
+
+    "Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Three strongly connected components." >> {
+      val A = DagVertex("")
+      val B = DagVertex("")
+      val C = DagVertex("")
+      val D = DagVertex("")
+      val E = DagVertex("")
+      val F = DagVertex("")
+      val G = DagVertex("")
+      A addChildren Set(B, F)
+      B addChildren Set(C, D)
+      C addChild E
+      D addChildren Set(C, E)
+      E addChild D
+      F addChild G
+      G addChild A
+      val rootedDag = new RootedDag(A)
+      rootedDag.stronglyConnectedComponents must haveSize(3)
     }
   }
 
@@ -178,6 +197,25 @@ class RootedDagSpecification extends Specification {
       B addChildren Set(C, D)
       C addChildren Set(D, E)
       D addChildren Set(B, C)
+      val rootedDag = new RootedDag(A)
+      rootedDag.isAcyclic must beFalse
+    }
+
+    "Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Three strongly connected components." >> {
+      val A = DagVertex("")
+      val B = DagVertex("")
+      val C = DagVertex("")
+      val D = DagVertex("")
+      val E = DagVertex("")
+      val F = DagVertex("")
+      val G = DagVertex("")
+      A addChildren Set(B, F)
+      B addChildren Set(C, D)
+      C addChild E
+      D addChildren Set(C, E)
+      E addChild D
+      F addChild G
+      G addChild A
       val rootedDag = new RootedDag(A)
       rootedDag.isAcyclic must beFalse
     }
