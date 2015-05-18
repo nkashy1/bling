@@ -10,12 +10,24 @@ class DagVertex(val label: String) {
   def addChild(child: DagVertex) = {
     children += child
   }
+  def addChildren(children: Set[DagVertex]) = {
+    children foreach addChild
+  }
   def hasChild(vertex: DagVertex): Boolean = {
     children contains vertex
+  }
+  def hasChildren(vertices: Set[DagVertex]): Boolean ={
+    !(vertices.map(children contains _) contains false)
   }
   def removeChild(child: DagVertex) = {
     children -= child
   }
+  def removeChildren(children: Set[DagVertex]) = {
+    children foreach removeChild
+  }
+
+  var index: Option[Int] = None
+  var lowLink: Option[Int] = None
 }
 
 object DagVertex {
