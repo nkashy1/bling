@@ -10,10 +10,21 @@ class DagVertex(val label: String) {
   def addChild(child: DagVertex) = {
     children += child
   }
-  def isParentOf(vertex: DagVertex): Boolean = {
+  def hasChild(vertex: DagVertex): Boolean = {
     children contains vertex
   }
   def removeChild(child: DagVertex) = {
     children -= child
+  }
+}
+
+object DagVertex {
+  def apply (label: String) = {
+    new DagVertex(label)
+  }
+  def apply(label: String, children: Set[DagVertex]) = {
+    val vertex = new DagVertex(label)
+    children foreach vertex.addChild
+    vertex
   }
 }
