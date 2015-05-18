@@ -47,7 +47,7 @@ class RootedDag(val root: DagVertex) {
           }
           components = components :+ component
         }
-
+        
         v.lowLink get
       }
     }
