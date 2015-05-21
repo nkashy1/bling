@@ -220,4 +220,17 @@ class RootedDagSpecification extends Specification {
       rootedDag.isAcyclic must beFalse
     }
   }
+
+  "The RootedDag companion object may be used to instantiate a new RootedDag." >> {
+    "It allows instantiation without the use of \"new\"." >> {
+      val root = DagVertex("")
+      val rootedDag = RootedDag(root)
+      rootedDag.root mustEqual root
+    }
+
+    "It also allows instantiation of a RootedDag with root having a specified label." >> {
+      val rootedDag = RootedDag("lol")
+      rootedDag.root.label mustEqual "lol"
+    }
+  }
 }

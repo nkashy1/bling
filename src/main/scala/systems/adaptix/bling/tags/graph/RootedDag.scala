@@ -63,3 +63,8 @@ class RootedDag(val root: DagVertex) {
     components
   }
 }
+
+object RootedDag {
+  def apply(root: DagVertex) = new RootedDag(root)
+  def apply(rootLabel: String) = new RootedDag(DagVertex(rootLabel))
+}
