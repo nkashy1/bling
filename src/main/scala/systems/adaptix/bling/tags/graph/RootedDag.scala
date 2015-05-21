@@ -9,7 +9,7 @@ import scala.collection.mutable.Stack
 class RootedDag(val root: DagVertex) {
   def isAcyclic: Boolean = {
     val components = stronglyConnectedComponents
-    components.filter(_.size > 1).size < 1
+    components.filter(_.size > 1).size == 0
   }
 
   /**
