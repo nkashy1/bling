@@ -89,8 +89,9 @@ class DagVertexSpecification extends Specification {
     parent.children must contain(child2)
   }
 
-  "A DagVertex also has the member variables \"index\" and \"backLink\", both of type Option[Int] which are used to validate acyclicity. They are set to None at instantiation." >> {
+  "A DagVertex also has the member variables \"onStack\", \"index\" and \"backLink\", of types Boolean, Option[Int], and Option[Int] respectively, which are used to validate acyclicity. They are set to None at instantiation." >> {
     val test = new DagVertex("test")
+    test.onStack must beFalse
     test.index must beNone
     test.lowLink must beNone
   }

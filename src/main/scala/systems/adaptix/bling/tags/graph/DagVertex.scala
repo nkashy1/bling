@@ -26,6 +26,7 @@ class DagVertex(val label: String) {
     children foreach removeChild
   }
 
+  var onStack: Boolean = false
   var index: Option[Int] = None
   var lowLink: Option[Int] = None
 }

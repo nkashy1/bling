@@ -18,7 +18,7 @@ class RootedDagSpecification extends Specification {
       val rootedDag = new RootedDag(root)
       val components = rootedDag.stronglyConnectedComponents
       components must haveSize(1)
-      components(0) must contain(root)
+      components map (_.contains(root)) mustEqual Set(true)
     }
 
     "After the method call, each vertex in the RootedDag should have its state refreshed so that its index and lowLink parameters are once again None." >> {
@@ -201,7 +201,7 @@ class RootedDagSpecification extends Specification {
       rootedDag.isAcyclic must beFalse
     }
 
-    "Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Three strongly connected components." >> {
+    "Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Cyclic." >> {
       val A = DagVertex("")
       val B = DagVertex("")
       val C = DagVertex("")
@@ -218,6 +218,18 @@ class RootedDagSpecification extends Specification {
       G addChild A
       val rootedDag = new RootedDag(A)
       rootedDag.isAcyclic must beFalse
+    }
+
+    "Example 8: Root, two children, and a grandchild common to the two children. Acyclic." >> {
+      val root = DagVertex("")
+      val child1 = DagVertex("")
+      val child2 = DagVertex("")
+      val grandchild = DagVertex("")
+      root addChildren Set(child1, child2)
+      child1 addChild grandchild
+      child2 addChild grandchild
+      val rootedDag = new RootedDag(root)
+      rootedDag.isAcyclic must beTrue
     }
   }
 
