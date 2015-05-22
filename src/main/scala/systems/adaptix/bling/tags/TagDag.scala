@@ -26,6 +26,8 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
+  def aggregateChildren(groupTag: String, memberTags: Set[String], contextTag: String = universalTag): Unit = {}
+
   def link(parentTag: String, childTag: String) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
@@ -47,7 +49,7 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     val child = tagVertices(childTag)
     parent.removeChild(child)
 
-    // TODO: This is clearly not the optimal way to check universality after an edge deletion. Just check if you can still get from root to deleted vertex.
+    // TODO: This is clearly not the optimal way to check universality after an edge deletion. Just check if you can still get from root to child of deleted edge.
     if (!validateUniversality) {
       parent.addChild(child)
       throw new IllegalArgumentException("Unlinking tags violated universality.")
