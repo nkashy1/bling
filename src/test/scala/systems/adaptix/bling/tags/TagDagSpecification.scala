@@ -106,6 +106,12 @@ class TagDagSpecification extends Specification {
         val tags = new TagDag("root")
         tags.insertTag("root") must throwA[IllegalArgumentException]
       }
+
+      "The method also throws an IllegalArgumentException if one of the specified parents or children is not a registered tag." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("lol", Set("fakeTag")) must throwA[IllegalArgumentException]
+        tags.insertTag("lol", children = Set("fakeTag")) must throwA[IllegalArgumentException]
+      }
     }
 
     "The \"descendants\" method returns the tags which are reachable from the given tag." >> {

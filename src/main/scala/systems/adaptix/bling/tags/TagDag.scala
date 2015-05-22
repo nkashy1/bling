@@ -13,6 +13,9 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
 
   def insertTag(tag: String, parents: Set[String] = Set(universalTag), children: Set[String] = Set()) = {
     assertHasNotTag(tag)
+    parents foreach { assertHasTag }
+    children foreach { assertHasTag }
+
     val tagVertex = DagVertex(tag)
     parents map ( tagVertices(_) addChild tagVertex )
     tagVertex addChildren(
@@ -26,7 +29,11 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
-  def aggregateChildren(groupTag: String, memberTags: Set[String], contextTag: String = universalTag): Unit = {}
+  def groupSiblings(groupTag: String, memberTags: Set[String], contextTag: String = universalTag) = {
+    assertHasTag(contextTag)
+
+    insertTag(groupTag, Set(contextTag), memberTags)
+  }
 
   def link(parentTag: String, childTag: String) = {
     assertHasTag(parentTag)
