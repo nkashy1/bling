@@ -108,6 +108,46 @@ class TagDagSpecification extends Specification {
       }
     }
 
+    "The \"descendants\" method returns the tags which are reachable from the given tag." >> {
+      "The tags are returned in a container of type Seq[String]." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("lol")
+        tags.insertTag("rofl")
+        tags.insertTag("omg")
+        tags.insertTag("wtf", Set("omg"))
+        tags.insertTag("bbq", Set("wtf"))
+
+        val descendantsOfOmg = tags descendants "omg"
+        descendantsOfOmg must haveSize(3)
+        descendantsOfOmg must contain("omg")
+        descendantsOfOmg must contain("wtf")
+        descendantsOfOmg must contain("bbq")
+
+        val descendantsOfRoot = tags descendants "root"
+        descendantsOfRoot must haveSize(6)
+        descendantsOfRoot(0) mustEqual "root"
+        descendantsOfRoot must contain("lol")
+        descendantsOfRoot must contain("rofl")
+        descendantsOfRoot must contain("omg")
+        descendantsOfRoot(4) mustEqual "wtf"
+        descendantsOfRoot(5) mustEqual "bbq"
+      }
+
+      "The method throws an IllegalArgumentException if the originating tag is not registered in the TagDag." >> {
+        val tags = new TagDag("root")
+        (tags descendants "fakeTag") must throwA[IllegalArgumentException]
+      }
+    }
+
+    "The \"validateUniversality\" method checks if every registered tag in a TagDag is reachable from the universalTag." >> {
+      val tags = new TagDag("root")
+      tags insertTag "child"
+      tags.validateUniversality must beTrue
+
+      tags.root removeChild tags.tagVertices("child")
+      tags.validateUniversality must beFalse
+    }
+
     "The \"link\" method facilitates edge creation." >> {
       "The argument order determines the direction of the edge." >> {
         val tags = new TagDag("root")
@@ -129,7 +169,7 @@ class TagDagSpecification extends Specification {
         tags.link("vertex", "fakeChild") must throwA[IllegalArgumentException]
       }
 
-      "The method reverts the TagDag to its previous state and throws an exception if the introduction of the link creates a cycle." >> {
+      "The method reverts the TagDag to its previous state and throws an IllegalArgumentException if the introduction of the link creates a cycle in the TagDag." >> {
         val tags = new TagDag("root")
         tags.insertTag("child")
         val child = tags tagVertices "child"
@@ -141,6 +181,38 @@ class TagDagSpecification extends Specification {
       }
     }
 
+    "The \"unlink\" method facilitates edge removal." >> {
+      "The argument order determines the direction of the edge." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child")
+        tags.insertTag("sibling", Set("root", "child"))
+        tags.tagVertices("root").children must contain(tags.tagVertices("sibling"))
+        tags.tagVertices("child").children must contain(tags.tagVertices("sibling"))
 
+        tags.unlink("child", "sibling")
+        tags.tagVertices("root").children must contain(tags.tagVertices("sibling"))
+        tags.tagVertices("child").children must not contain(tags.tagVertices("sibling"))
+      }
+
+      "The method throws an IllegalArgumentException if either of its arguments has not been registered in the TagDag." >> {
+        val tags = new TagDag("root")
+        tags.unlink("root", "fakeTag") must throwA[IllegalArgumentException]
+        tags.unlink("fakeTag", "root") must throwA[IllegalArgumentException]
+      }
+
+      "The method gracefully does nothing if, although both its arguments are registered in the TagDag, there is no edge between them in the specified direction." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child")
+        tags.root.children must haveSize(1)
+        tags.root.children must contain(tags.tagVertices("child"))
+      }
+
+      "The method reverts the TagDag to its previous state and throws an IllegalArgumentException if the specified unlinking causes the child node to become isolated." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child")
+        tags.unlink("root", "child") must throwA[IllegalArgumentException]
+        tags.root.children must contain(tags.tagVertices("child"))
+      }
+    }
   }
 }

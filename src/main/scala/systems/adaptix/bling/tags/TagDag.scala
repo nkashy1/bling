@@ -35,6 +35,34 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
+  def validateUniversality = {
+    val descendantsOfRoot = descendants(universalTag)
+    tagVertices.keys.forall( descendantsOfRoot contains _ )
+  }
+
+  /**
+   * Returns a sequence containing the tags descendant from the given tag in order of breadth-first trarversal.
+   * @param tag
+   * @return Seq[String]
+   */
+  def descendants(tag: String) = {
+    assertHasTag(tag)
+
+    var descendantTags = Seq[String]()
+    val toVisit = mutable.Queue[DagVertex](tagVertices(tag))
+
+    def process(vertex: DagVertex) = {
+      descendantTags = descendantTags :+ vertex.label
+      vertex.children foreach { toVisit.enqueue(_) }
+    }
+
+    while (!toVisit.isEmpty) {
+      process(toVisit.dequeue)
+    }
+
+    descendantTags
+  }
+
   def link(parentTag: String, childTag: String) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
@@ -44,7 +72,22 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     parent.addChild(child)
     if (!isAcyclic) {
       parent.removeChild(child)
-      throw new IllegalArgumentException("Linkage led to acyclicity.")
+      throw new IllegalArgumentException("Linking tags violated acyclicity.")
+    }
+  }
+
+  def unlink(parentTag: String, childTag: String) = {
+    assertHasTag(parentTag)
+    assertHasTag(childTag)
+
+    val parent = tagVertices(parentTag)
+    val child = tagVertices(childTag)
+    parent.removeChild(child)
+
+    // TODO: This is clearly not the optimal way to check universality after a deletion. Just check if you can still get from root to deleted vertex.
+    if (!validateUniversality) {
+      parent.addChild(child)
+      throw new IllegalArgumentException("Unlinking tags violated universality.")
     }
   }
 }
