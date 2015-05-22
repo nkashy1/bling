@@ -11,15 +11,6 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
 
   def hasTag(tag: String) = tagVertices.keys exists(_ == tag)
 
-  def assertHasTag(tag: String) = {
-    if ( !hasTag(tag) )
-      throw new IllegalArgumentException("Tag does not exist: " + tag)
-  }
-  def assertHasNotTag(tag: String) = {
-    if ( hasTag(tag) )
-      throw new IllegalArgumentException("Tag already exists: " + tag)
-  }
-
   def insertTag(tag: String, parents: Set[String] = Set(universalTag), children: Set[String] = Set()) = {
     assertHasNotTag(tag)
     val tagVertex = DagVertex(tag)
@@ -32,6 +23,34 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     } else {
       parents map ( tagVertices(_) removeChild tagVertex )
       throw new IllegalArgumentException("The attempted insertion did not preserve acyclicity: " + tag)
+    }
+  }
+
+  def link(parentTag: String, childTag: String) = {
+    assertHasTag(parentTag)
+    assertHasTag(childTag)
+
+    val parent = tagVertices(parentTag)
+    val child = tagVertices(childTag)
+    parent.addChild(child)
+    if (!isAcyclic) {
+      parent.removeChild(child)
+      throw new IllegalArgumentException("Linking tags violated acyclicity.")
+    }
+  }
+
+  def unlink(parentTag: String, childTag: String) = {
+    assertHasTag(parentTag)
+    assertHasTag(childTag)
+
+    val parent = tagVertices(parentTag)
+    val child = tagVertices(childTag)
+    parent.removeChild(child)
+
+    // TODO: This is clearly not the optimal way to check universality after an edge deletion. Just check if you can still get from root to deleted vertex.
+    if (!validateUniversality) {
+      parent.addChild(child)
+      throw new IllegalArgumentException("Unlinking tags violated universality.")
     }
   }
 
@@ -63,31 +82,12 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     descendantTags
   }
 
-  def link(parentTag: String, childTag: String) = {
-    assertHasTag(parentTag)
-    assertHasTag(childTag)
-
-    val parent = tagVertices(parentTag)
-    val child = tagVertices(childTag)
-    parent.addChild(child)
-    if (!isAcyclic) {
-      parent.removeChild(child)
-      throw new IllegalArgumentException("Linking tags violated acyclicity.")
-    }
+  def assertHasTag(tag: String) = {
+    if ( !hasTag(tag) )
+      throw new IllegalArgumentException("Tag does not exist: " + tag)
   }
-
-  def unlink(parentTag: String, childTag: String) = {
-    assertHasTag(parentTag)
-    assertHasTag(childTag)
-
-    val parent = tagVertices(parentTag)
-    val child = tagVertices(childTag)
-    parent.removeChild(child)
-
-    // TODO: This is clearly not the optimal way to check universality after a deletion. Just check if you can still get from root to deleted vertex.
-    if (!validateUniversality) {
-      parent.addChild(child)
-      throw new IllegalArgumentException("Unlinking tags violated universality.")
-    }
+  def assertHasNotTag(tag: String) = {
+    if ( hasTag(tag) )
+      throw new IllegalArgumentException("Tag already exists: " + tag)
   }
 }
