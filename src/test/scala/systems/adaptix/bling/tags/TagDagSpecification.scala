@@ -18,10 +18,10 @@ class TagDagSpecification extends Specification {
   }
 
   "TagDags build upon RootedDags by providing a guarantee that each string occurs AT MOST ONCE as a vertex label. To this end, a TagDag provides an interface to vertex and label manipulation." >> {
-    "The labels of the vertices of a TagDag are stored as keys in its allTags member value, which is a mutable mapping from Strings to DagVertices. The value matching each of these tags is the DagVertex in the TagDag which has that tag as its label." >> {
+    "The labels of the vertices of a TagDag are stored as keys in its tagVertices member value, which is a mutable mapping from Strings to DagVertices. The value matching each of these tags is the DagVertex in the TagDag which has that tag as its label." >> {
       val tags = new TagDag("lol")
-      tags.allTags must haveSize(1)
-      tags.allTags.getOrElse("lol", "") mustEqual tags.root
+      tags.tagVertices must haveSize(1)
+      tags.tagVertices.getOrElse("lol", "") mustEqual tags.root
     }
 
     "The \"hasTag\" method is a means of testing whether or not a TagDag already contains a vertex with a given tag." >> {
@@ -30,36 +30,117 @@ class TagDagSpecification extends Specification {
       tags hasTag("rofl") must beFalse
     }
 
+    "It is possible to make assertions regarding the existence of tags." >> {
+      "\"assertHasTag\" throws an IllegalArgumentException if its argument IS NOT a registered tag." >> {
+        val tags = new TagDag("root")
+        tags.assertHasTag("root") mustEqual ()
+        tags.assertHasTag("lol") must throwA[IllegalArgumentException]
+      }
+
+      "\"assertHasNotTag\" throws an IllegalArgumentException if its argument IS a registered tag." >> {
+        val tags = new TagDag("root")
+        tags.assertHasNotTag("root") must throwA[IllegalArgumentException]
+        tags.assertHasNotTag("lol") mustEqual ()
+      }
+    }
+
     "A new tag may be added to a TagDag via the \"insertTag\" method." >> {
       "By default, the tag is inserted as a child of the TagDag's root vertex." >> {
         val tags = new TagDag("root")
         tags.root.children must beEmpty
         tags.insertTag("new")
         tags.root.children must haveSize(1)
-        tags.root.children must contain(tags allTags("new"))
+        tags.root.children must contain(tags tagVertices("new"))
       }
 
       "The method also allows the insertion of a tag as a child to a specified Set of parents." >> {
         val tags = new TagDag("root")
-        tags.root.children must beEmpty
         tags.insertTag("child1")
         tags.insertTag("child2")
         tags.insertTag("grandchild", Set("child1", "child2"))
 
-        val rootChildren = (tags allTags "root").children
+        val rootChildren = (tags tagVertices "root").children
         rootChildren must haveSize(2)
-        rootChildren must contain(tags allTags "child1")
-        rootChildren must contain(tags allTags "child2")
-        rootChildren must not contain(tags allTags "grandchild")
+        rootChildren must contain(tags tagVertices "child1")
+        rootChildren must contain(tags tagVertices "child2")
+        rootChildren must not contain(tags tagVertices "grandchild")
 
-        val child1Children = (tags allTags "child1").children
+        val child1Children = (tags tagVertices "child1").children
         child1Children must haveSize(1)
-        child1Children must contain(tags allTags "grandchild")
+        child1Children must contain(tags tagVertices "grandchild")
 
-        val child2Children = (tags allTags "child2").children
+        val child2Children = (tags tagVertices "child2").children
         child2Children must haveSize(1)
-        child2Children must contain(tags allTags "grandchild")
+        child2Children must contain(tags tagVertices "grandchild")
+      }
+
+      "The method also allows for specification of a Set of children of the tag to be inserted." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child1")
+        tags.insertTag("child2", parents = Set("root"), children = Set("child1"))
+
+        val rootChildren = (tags tagVertices "root").children
+        rootChildren must haveSize(2)
+        rootChildren must contain(tags tagVertices "child1")
+        rootChildren must contain(tags tagVertices "child2")
+
+        val child1Children = (tags tagVertices "child1").children
+        child1Children must beEmpty
+
+        val child2Children = (tags tagVertices "child2").children
+        child2Children must haveSize(1)
+        child2Children must contain(tags tagVertices "child1")
+      }
+
+      "Any insertion which ultimately violates acyclicity will result in an IllegalArgumentException and a reversion of state of the TagDag to before the insertion was attempted." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child1")
+        tags.insertTag("child2", children = Set("root")) must throwA[IllegalArgumentException]
+        tags.tagVertices must haveSize(2)
+        val root = tags tagVertices "root"
+        root.children must haveSize(1)
+        root.children must contain(tags tagVertices "child1")
+      }
+
+      "The attempted insertion of a tag which already exists will cause the method to throw an IllegalArgumentException." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("root") must throwA[IllegalArgumentException]
       }
     }
+
+    "The \"link\" method facilitates edge creation." >> {
+      "The argument order determines the direction of the edge." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("parent")
+        tags.insertTag("child")
+        tags.link("parent", "child")
+        val parent = tags.tagVertices("parent")
+        val child = tags.tagVertices("child")
+        tags.root hasChildren Set(parent, child) must beTrue
+        parent.children must haveSize(1)
+        parent hasChild child must beTrue
+        child.children must beEmpty
+      }
+
+      "The method throws an exception if either one of the tags has not been registered in the TagDag." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("vertex")
+        tags.link("fakeParent", "vertex") must throwA[IllegalArgumentException]
+        tags.link("vertex", "fakeChild") must throwA[IllegalArgumentException]
+      }
+
+      "The method reverts the TagDag to its previous state and throws an exception if the introduction of the link creates a cycle." >> {
+        val tags = new TagDag("root")
+        tags.insertTag("child")
+        val child = tags tagVertices "child"
+
+        tags.link("child", "root") must throwA[IllegalArgumentException]
+        tags.root.children must haveSize(1)
+        tags.root.children must contain(child)
+        child.children must beEmpty
+      }
+    }
+
+
   }
 }
