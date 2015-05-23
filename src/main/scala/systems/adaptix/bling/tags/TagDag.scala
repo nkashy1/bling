@@ -1,5 +1,7 @@
 package systems.adaptix.bling.tags
 
+import java.util.NoSuchElementException
+
 import systems.adaptix.bling.tags.graph.{RootedDag, DagVertex}
 import scala.collection.mutable
 
@@ -29,10 +31,31 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
+  /**
+   * Creates a group tag to denote a collection of children of a common parent tag. The group tag is added inbetween the parent tag
+   * and the group member tags. The edges from the parent to each of the group members are erased.
+   *
+   * Note that the groupTag cannot be a previously registered tag. Moreover, the grouping operation local to the parent tag. Therefore, no
+   * cycle is created as a side-effect of this method.
+   *
+   * @param groupTag
+   * @param memberTags
+   * @param contextTag
+   */
   def groupSiblings(groupTag: String, memberTags: Set[String], contextTag: String = universalTag) = {
-    assertHasTag(contextTag)
+    assertHasNotTag(groupTag)
+    try{
+      if (memberTags exists { member => !tagVertices(contextTag).hasChild(tagVertices(member)) }) {
+        throw new IllegalArgumentException("memberTags have to be children of the contextTag.")
+      }
+    } catch {
+      case ex: NoSuchElementException => throw new IllegalArgumentException("The contextTag and all the memberTags have to be registered.")
+    }
 
     insertTag(groupTag, Set(contextTag), memberTags)
+    tagVertices(contextTag).removeChildren(
+      memberTags map { tagVertices }
+    )
   }
 
   def link(parentTag: String, childTag: String) = {
@@ -91,6 +114,7 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     descendantTags
   }
 
+  // TODO: Get rid of assertHasTag. Would be better to handle with a try-catch statement. assertHasNotTag is still useful.
   def assertHasTag(tag: String) = {
     if ( !hasTag(tag) )
       throw new IllegalArgumentException("Tag does not exist: " + tag)

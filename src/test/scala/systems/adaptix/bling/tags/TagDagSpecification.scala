@@ -26,8 +26,8 @@ class TagDagSpecification extends Specification {
 
     "The \"hasTag\" method is a means of testing whether or not a TagDag already contains a vertex with a given tag." >> {
       val tags = new TagDag("lol")
-      tags hasTag("lol") must beTrue
-      tags hasTag("rofl") must beFalse
+      tags hasTag "lol" must beTrue
+      tags hasTag "rofl" must beFalse
     }
 
     "It is possible to make assertions regarding the existence of tags." >> {
@@ -218,6 +218,51 @@ class TagDagSpecification extends Specification {
         tags.insertTag("child")
         tags.unlink("root", "child") must throwA[IllegalArgumentException]
         tags.root.children must contain(tags.tagVertices("child"))
+      }
+    }
+
+    "The \"groupSiblings\" method facilitates the creation of a new tag representing the aggregation of some subset of the children of a given contextual tag." >> {
+      "The new tag is interjected between the contextual tag and its children." >> {
+        val tags = new TagDag("context")
+        tags.insertTag("member1")
+        tags.insertTag("member2")
+        tags.insertTag("non-member")
+
+        tags.groupSiblings("group", Set("member1", "member2"), "context")
+
+        Set("member1", "member2", "context").
+          map( tag => tags.tagVertices(tag) ).
+          exists( vertex => tags.tagVertices("context").hasChild(vertex) ) must beFalse
+        Set("group", "non-member").
+          map( tag => tags.tagVertices(tag) ).
+          forall( vertex => tags.tagVertices("context").hasChild(vertex) ) must beTrue
+
+        Set("member1", "member2").
+          map( tag => tags.tagVertices(tag) ).
+          forall( vertex => tags.tagVertices("group").hasChild(vertex) ) must beTrue
+        Set("context", "non-member", "group").
+          map( tag => tags.tagVertices(tag) ).
+          exists( vertex => tags.tagVertices("group").hasChild(vertex) ) must beFalse
+
+        tags.tagVertices("context").children must haveSize(2)
+        tags.tagVertices("group").children must haveSize(2)
+      }
+
+      "If the groupTag has already been registered in the TagDag, the method throws an IllegalArgumentException." >> {
+        val tags = new TagDag("context")
+        tags.insertTag("member")
+
+        tags.groupSiblings("member", Set("member"), "context") must throwA[IllegalArgumentException]
+      }
+
+      "If the contextTag or one of the memberTags is NOT a registered tag, or if any of the memberTags is not a child of the contextTag, the method throws an IllegalArgumentException." >> {
+        val tags = new TagDag("context")
+        tags.insertTag("shallow-member")
+        tags.insertTag("deep-member", Set("shallow-member"))
+
+        tags.groupSiblings("lol", Set("shallow-member"), "fakeTag") must throwA[IllegalArgumentException]("The contextTag and all the memberTags have to be registered.")
+        tags.groupSiblings("lol", Set("fakeTag"), "context") must throwA[IllegalArgumentException]("The contextTag and all the memberTags have to be registered.")
+        tags.groupSiblings("lol", Set("deep-member"), "context") must throwA[IllegalArgumentException]("memberTags have to be children of the contextTag.")
       }
     }
   }
