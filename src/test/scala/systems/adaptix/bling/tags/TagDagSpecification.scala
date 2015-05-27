@@ -50,7 +50,7 @@ class TagDagSpecification extends Specification {
         tags.root.children must beEmpty
         tags.insertTag("new")
         tags.root.children must haveSize(1)
-        tags.root.children must contain(tags tagVertices("new"))
+        tags.root.children must contain(tags tagVertices "new")
       }
 
       "The method also allows the insertion of a tag as a child to a specified Set of parents." >> {
@@ -180,7 +180,7 @@ class TagDagSpecification extends Specification {
         tags.insertTag("child")
         val child = tags tagVertices "child"
 
-        tags.link("child", "root") must throwA[IllegalArgumentException]
+        tags.link("child", "root") must throwA[IllegalArgumentException]("Linking tags violated acyclicity: child to root")
         tags.root.children must haveSize(1)
         tags.root.children must contain(child)
         child.children must beEmpty
@@ -263,6 +263,33 @@ class TagDagSpecification extends Specification {
         tags.groupSiblings("lol", Set("shallow-member"), "fakeTag") must throwA[IllegalArgumentException]("The contextTag and all the memberTags have to be registered.")
         tags.groupSiblings("lol", Set("fakeTag"), "context") must throwA[IllegalArgumentException]("The contextTag and all the memberTags have to be registered.")
         tags.groupSiblings("lol", Set("deep-member"), "context") must throwA[IllegalArgumentException]("memberTags have to be children of the contextTag.")
+      }
+    }
+
+    "The \"pushChild\" method provides a means to move a newly created tag (which is inserted as a child of the universal tag) down the TagDag to a more suitable location." >> {
+      "The tag to be moved is passed as the first argument, and its new parent is passed as the second argument." >> {
+        val tags = new TagDag("omg")
+        tags.insertTag("wtf")
+        tags.insertTag("bbq")
+
+        tags.root.children must haveSize(2)
+        tags.tagVertices("wtf").children must beEmpty
+
+        tags.pushChild("bbq", "wtf")
+
+        tags.root.children must haveSize(1)
+        tags.root.hasChild(tags.tagVertices("wtf")) must beTrue
+        tags.root.hasChild(tags.tagVertices("bbq")) must beFalse
+        tags.tagVertices("wtf").children must haveSize(1)
+        tags.tagVertices("wtf").hasChild(tags.tagVertices("bbq")) must beTrue
+      }
+
+      "If either argument is not a registered tag, the method throws an IllegalArgumentException." >> {
+        val tags = new TagDag("omg")
+        tags.insertTag("wtf")
+
+        tags.pushChild("bbq", "wtf") must throwA[IllegalArgumentException]
+        tags.pushChild("wtf", "fakeTag") must throwA[IllegalArgumentException]
       }
     }
   }

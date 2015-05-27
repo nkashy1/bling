@@ -9,11 +9,13 @@ import scala.collection.mutable
  * Created by nkashyap on 5/18/15.
  */
 class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)) {
-  val tagVertices = mutable.Map[String, DagVertex](universalTag -> root)
+  type Tag = String
 
-  def hasTag(tag: String) = tagVertices.keys exists(_ == tag)
+  val tagVertices = mutable.Map[Tag, DagVertex](universalTag -> root)
 
-  def insertTag(tag: String, parents: Set[String] = Set(universalTag), children: Set[String] = Set()) = {
+  def hasTag(tag: Tag) = tagVertices.keys exists(_ == tag)
+
+  def insertTag(tag: Tag, parents: Set[Tag] = Set(universalTag), children: Set[Tag] = Set()) = {
     assertHasNotTag(tag)
     parents foreach { assertHasTag }
     children foreach { assertHasTag }
@@ -42,7 +44,7 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
    * @param memberTags
    * @param contextTag
    */
-  def groupSiblings(groupTag: String, memberTags: Set[String], contextTag: String = universalTag) = {
+  def groupSiblings(groupTag: Tag, memberTags: Set[Tag], contextTag: Tag = universalTag) = {
     assertHasNotTag(groupTag)
     try{
       if (memberTags exists { member => !tagVertices(contextTag).hasChild(tagVertices(member)) }) {
@@ -58,7 +60,25 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     )
   }
 
-  def link(parentTag: String, childTag: String) = {
+  /**
+   * Pushes a newly inserted tag (which is a child of root) down the TagDag so that it becomes child to a more suitable parent.
+   * Note that this method is intended to be applied to newly inserted tags only. As such, no check for acyclicity or universality
+   * is made as a side-effect of the method call.
+   *
+   * @param target
+   * @param newParent
+   */
+  def pushChild(target: Tag, newParent: Tag) = {
+    assertHasTag(target)
+    assertHasTag(newParent)
+
+    val targetVertex = tagVertices(target)
+    val parentVertex = tagVertices(newParent)
+    parentVertex addChild targetVertex
+    root removeChild targetVertex
+  }
+
+  def link(parentTag: Tag, childTag: Tag) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
 
@@ -67,11 +87,11 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     parent.addChild(child)
     if (!isAcyclic) {
       parent.removeChild(child)
-      throw new IllegalArgumentException("Linking tags violated acyclicity.")
+      throw new IllegalArgumentException("Linking tags violated acyclicity: " + parentTag + " to " + childTag + ".")
     }
   }
 
-  def unlink(parentTag: String, childTag: String) = {
+  def unlink(parentTag: Tag, childTag: Tag) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
 
@@ -94,12 +114,12 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
   /**
    * Returns a sequence containing the tags descendant from the given tag in order of breadth-first trarversal.
    * @param tag
-   * @return Seq[String]
+   * @return Seq[Tag]
    */
-  def descendants(tag: String) = {
+  def descendants(tag: Tag) = {
     assertHasTag(tag)
 
-    var descendantTags = Seq[String]()
+    var descendantTags = Seq[Tag]()
     val toVisit = mutable.Queue[DagVertex](tagVertices(tag))
 
     def process(vertex: DagVertex) = {
@@ -115,11 +135,11 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
   }
 
   // TODO: Get rid of assertHasTag. Would be better to handle with a try-catch statement. assertHasNotTag is still useful.
-  def assertHasTag(tag: String) = {
+  def assertHasTag(tag: Tag) = {
     if ( !hasTag(tag) )
       throw new IllegalArgumentException("Tag does not exist: " + tag)
   }
-  def assertHasNotTag(tag: String) = {
+  def assertHasNotTag(tag: Tag) = {
     if ( hasTag(tag) )
       throw new IllegalArgumentException("Tag already exists: " + tag)
   }
