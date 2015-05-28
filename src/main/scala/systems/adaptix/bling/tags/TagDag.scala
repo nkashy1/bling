@@ -144,3 +144,7 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
       throw new IllegalArgumentException("Tag already exists: " + tag)
   }
 }
+
+object TagDag {
+  def apply(universalTag: String) = new TagDag(universalTag)
+}
