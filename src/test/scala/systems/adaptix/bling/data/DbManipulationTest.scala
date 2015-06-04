@@ -27,13 +27,14 @@ class DbManipulationTest extends Specification {
     ok
   }
 
+  case class TestName(id: Long, name: Option[String])
+  object TestName extends SQLSyntaxSupport[TestName] {
+    override val tableName = "test"
+    def apply(resultSet: WrappedResultSet) = new TestName(resultSet.long("id"), resultSet.stringOpt("name"))
+  }
+
   "Select values from test table" in {
-    case class TestName(id: Long, name: Option[String])
-    object TestNameIfy extends SQLSyntaxSupport[TestName] {
-      override val tableName = "test"
-      def apply(resultSet: WrappedResultSet) = new TestName(resultSet.long("id"), resultSet.stringOpt("name"))
-    }
-    val testNames: List[TestName] = sql"SELECT * FROM test".map(resultSet => TestNameIfy(resultSet)).list.apply()
+    val testNames: List[TestName] = sql"SELECT * FROM test".map(resultSet => TestName(resultSet)).list.apply()
 
     testNames(0) mustEqual TestName(1, Some("Akshay"))
     testNames(1) mustEqual TestName(2, Some("Bom"))
