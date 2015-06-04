@@ -11,8 +11,10 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "3.6" % "test",
   "com.typesafe" % "config" % "1.0.2",
-  "com.typesafe.slick" %% "slick" % "3.0.0",
-  "org.slf4j" % "slf4j-nop" % "1.6.4",
-  "com.zaxxer" % "HikariCP-java6" % "2.3.7",
+  "org.scalikejdbc" %% "scalikejdbc" % "2.2.6",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "2.2.6",
+  "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.6" % "test",
+  "ch.qos.logback" % "logback-classic" % "1.1.3",
+  "com.h2database" % "h2" % "1.4.187",
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
 )
