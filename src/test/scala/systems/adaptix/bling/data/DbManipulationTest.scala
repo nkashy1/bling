@@ -3,7 +3,6 @@ package systems.adaptix.bling.data
 import org.specs2.mutable._
 
 import scalikejdbc._
-import scalikejdbc.specs2.mutable.AutoRollback
 
 /**
  * Created by nkashyap on 6/3/15.
