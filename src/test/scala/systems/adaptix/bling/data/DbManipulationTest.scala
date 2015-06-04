@@ -14,8 +14,10 @@ class DbManipulationTest extends Specification {
   DBs.setupAll()
   implicit val session = AutoSession
 
+  val table = SQLSyntax.createUnsafely("test")
+
   "Create test table" in {
-    sql"CREATE TABLE test (id SERIAL NOT NULL PRIMARY KEY, name TEXT)".execute.apply()
+    sql"CREATE TABLE ${table} (id SERIAL NOT NULL PRIMARY KEY, name TEXT)".execute.apply()
     ok
   }
 
@@ -23,7 +25,7 @@ class DbManipulationTest extends Specification {
     val names = Seq("Akshay", "Bom", "Thor")
     var ids = Seq[Long]()
     for (i <- 0 to 2) {
-      ids = ids :+ sql"INSERT INTO test (name) VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
+      ids = ids :+ sql"INSERT INTO ${table} (name) VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
     }
     ids(0) mustEqual 1
     ids(1) mustEqual 2
@@ -37,7 +39,7 @@ class DbManipulationTest extends Specification {
   }
 
   "Select values from test table" in {
-    val testNames: List[TestName] = sql"SELECT * FROM test".map(resultSet => TestName(resultSet)).list.apply()
+    val testNames: List[TestName] = sql"SELECT * FROM ${table}".map(resultSet => TestName(resultSet)).list.apply()
 
     testNames(0) mustEqual TestName(1, Some("Akshay"))
     testNames(1) mustEqual TestName(2, Some("Bom"))
@@ -45,7 +47,12 @@ class DbManipulationTest extends Specification {
   }
 
   "Drop test table" in {
-    sql"DROP TABLE test".execute.apply()
+    sql"DROP TABLE ${table}".execute.apply()
+    ok
+  }
+
+  "Close connections" in {
+    DBs.closeAll()
     ok
   }
 }
