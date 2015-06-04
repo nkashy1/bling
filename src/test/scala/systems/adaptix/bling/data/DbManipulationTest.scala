@@ -48,6 +48,4 @@ class DbManipulationTest extends Specification {
     sql"DROP TABLE test".execute.apply()
     ok
   }
-
-  DBs.close('blingtest)
 }
