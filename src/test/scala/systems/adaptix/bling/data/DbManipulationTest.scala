@@ -3,6 +3,7 @@ package systems.adaptix.bling.data
 import org.specs2.mutable._
 
 import scalikejdbc._
+import scalikejdbc.config._
 
 /**
  * Created by nkashyap on 6/3/15.
@@ -10,8 +11,7 @@ import scalikejdbc._
 class DbManipulationTest extends Specification {
   sequential
 
-  Class.forName("org.h2.Driver")
-  ConnectionPool.singleton("jdbc:h2:mem:test", "lol", "rofl")
+  DBs.setupAll()
   implicit val session = AutoSession
 
   "Create test table" in {
@@ -21,10 +21,13 @@ class DbManipulationTest extends Specification {
 
   "Insert values into test table" in {
     val names = Seq("Akshay", "Bom", "Thor")
-    names.foreach(name =>
-      sql"INSERT INTO test (name) VALUES (${name})".update.apply()
-    )
-    ok
+    var ids = Seq[Long]()
+    for (i <- 0 to 2) {
+      ids = ids :+ sql"INSERT INTO test (name) VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
+    }
+    ids(0) mustEqual 1
+    ids(1) mustEqual 2
+    ids(2) mustEqual 3
   }
 
   case class TestName(id: Long, name: Option[String])
@@ -45,4 +48,6 @@ class DbManipulationTest extends Specification {
     sql"DROP TABLE test".execute.apply()
     ok
   }
+
+  DBs.close('blingtest)
 }
