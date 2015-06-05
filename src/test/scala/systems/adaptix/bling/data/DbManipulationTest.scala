@@ -14,7 +14,7 @@ class DbManipulationTest extends Specification {
   DBs.setupAll()
   implicit val session = AutoSession
 
-  val table = SQLSyntax.createUnsafely("test")
+  val table = SQLSyntax.createUnsafely("DbManipulationTest_table")
 
   "Create test table" in {
     sql"CREATE TABLE ${table} (id SERIAL NOT NULL PRIMARY KEY, name TEXT)".execute.apply()
@@ -48,11 +48,6 @@ class DbManipulationTest extends Specification {
 
   "Drop test table" in {
     sql"DROP TABLE ${table}".execute.apply()
-    ok
-  }
-
-  "Close connections" in {
-    DBs.closeAll()
     ok
   }
 }
