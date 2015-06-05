@@ -16,15 +16,14 @@ sealed trait NotNull extends FieldProperty
 
 sealed trait DataFieldInfo {this: FieldProperty =>
   def fieldName: String
-  def sqlColumnName = SQLSyntax.createUnsafely(fieldName)
 
   def fieldType: String
-  def sqlTypeDeclaration = SQLSyntax.createUnsafely(
+  def sqlTypeDeclaration = {
     Map(fieldType -> true, "SERIAL" -> isSerialField, "NOT NULL" -> (isNotNull), "PRIMARY KEY" -> isPrimaryKey).
       filter(_._2 == true).
       keys.
       mkString(" ")
-  )
+  }
 
   private def isPrimaryKey: Boolean = this match {
     case _: PrimaryKey => true
