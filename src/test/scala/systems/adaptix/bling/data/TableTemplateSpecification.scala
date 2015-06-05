@@ -18,7 +18,7 @@ class TableTemplateSpecification extends Specification {
   "A TableTemplate object generates SQL code which can be executed to access and update the table it represents in a given database. The point is that a TableTemplate object can be created at run time, and the table schema therefore does not have to be known at compile time." >> {
     val tableName = "DataTableTemplateSpecification_table"
     val idColumn = AutoIdFieldInfo("id")
-    val nameColumn = PlainFieldInfo("name", "TEXT")
+    val nameColumn = PlainFieldInfo("name", "VARCHAR")
 
     val testTable = new TableTemplate(tableName, Seq(idColumn, nameColumn))
 
@@ -28,7 +28,7 @@ class TableTemplateSpecification extends Specification {
     }
 
     "The schema method returns the table schema as a string." >> {
-      testTable.schema mustEqual "id SERIAL NOT NULL PRIMARY KEY, name TEXT"
+      testTable.schema mustEqual "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR"
     }
 
     "The columnNames method returns the names of the columns within parentheses in the order in which they were provided to the TableTemplate object at instantiation." >> {
@@ -40,7 +40,7 @@ class TableTemplateSpecification extends Specification {
     }
 
     "The sqlCreate method returns an SQLSyntax object which can be executed within an sql interpolation to actually create the table in a given database. The create method performs this execution." >> {
-      val creationString = s"CREATE TABLE ${tableName} (id SERIAL NOT NULL PRIMARY KEY, name TEXT)"
+      val creationString = s"CREATE TABLE ${tableName} (id SERIAL NOT NULL PRIMARY KEY, name VARCHAR)"
       testTable.sqlCreate mustEqual SQLSyntax.createUnsafely(creationString)
     }
 
