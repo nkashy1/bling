@@ -5,7 +5,7 @@ import scalikejdbc._
  * Created by nkashyap on 6/4/15.
  */
 
-class DataTableTemplate(val tableName: String, val columns: Seq[DataFieldInfo]) {
+class TableTemplate(val tableName: String, val columns: Seq[FieldInfo]) {
   def sqlTableName = SQLSyntax.createUnsafely(tableName)
 
   def schema = columns.map( column =>

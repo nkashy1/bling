@@ -12,7 +12,7 @@ sealed trait SerialField extends FieldProperty {
 }
 sealed trait NotNull extends FieldProperty
 
-sealed trait DataFieldInfo {this: FieldProperty =>
+sealed trait FieldInfo {this: FieldProperty =>
   def fieldName: String
 
   def fieldType: String
@@ -39,7 +39,7 @@ sealed trait DataFieldInfo {this: FieldProperty =>
   }
 }
 
-final case class PlainFieldInfo(fieldName: String, fieldType: String) extends DataFieldInfo with PlainField
-final case class NotNullFieldInfo(fieldName: String, fieldType: String) extends DataFieldInfo with NotNull
-final case class PrimaryFieldInfo(fieldName: String, fieldType: String) extends DataFieldInfo with PrimaryKey with NotNull
-final case class AutoIdFieldInfo(fieldName: String) extends DataFieldInfo with PrimaryKey with SerialField with NotNull
+final case class PlainFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PlainField
+final case class NotNullFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with NotNull
+final case class PrimaryFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PrimaryKey with NotNull
+final case class AutoIdFieldInfo(fieldName: String) extends FieldInfo with PrimaryKey with SerialField with NotNull

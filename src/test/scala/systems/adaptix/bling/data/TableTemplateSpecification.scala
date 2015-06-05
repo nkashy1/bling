@@ -9,20 +9,20 @@ import scalikejdbc.config._
  * Created by nkashyap on 6/4/15.
  */
 
-class DataTableTemplateSpecification extends Specification {
+class TableTemplateSpecification extends Specification {
   sequential
 
   DBs.setupAll()
   implicit val session = AutoSession
 
-  "A DataTableTemplate object generates SQL code which can be executed to access and update the table it represents in a given database. The point is that a DataTableTemplate object can be created at run time, and the table schema therefore does not have to be known at compile time." >> {
+  "A TableTemplate object generates SQL code which can be executed to access and update the table it represents in a given database. The point is that a TableTemplate object can be created at run time, and the table schema therefore does not have to be known at compile time." >> {
     val tableName = "DataTableTemplateSpecification_table"
     val idColumn = AutoIdFieldInfo("id")
     val nameColumn = PlainFieldInfo("name", "TEXT")
 
-    val testTable = new DataTableTemplate(tableName, Seq(idColumn, nameColumn))
+    val testTable = new TableTemplate(tableName, Seq(idColumn, nameColumn))
 
-    "It is instantiated with the tableName, and a sequence of DataFieldInfo objects representing the columns of the table. These respectively form the tableName and columns members of the DataTableTemplate object." >> {
+    "It is instantiated with the tableName, and a sequence of FieldInfo objects representing the columns of the table. These respectively form the tableName and columns members of the TableTemplate object." >> {
       testTable.tableName mustEqual tableName
       testTable.columns mustEqual Seq(idColumn, nameColumn)
     }
@@ -31,11 +31,11 @@ class DataTableTemplateSpecification extends Specification {
       testTable.schema mustEqual "id SERIAL NOT NULL PRIMARY KEY, name TEXT"
     }
 
-    "The columnNames method returns the names of the columns within parentheses in the order in which they were provided to the DataTableTemplate object at instantiation." >> {
+    "The columnNames method returns the names of the columns within parentheses in the order in which they were provided to the TableTemplate object at instantiation." >> {
       testTable.columnNames mustEqual "(id, name)"
     }
 
-    "The nonAutoIdColumnNames method returns the names of the columns which are NOT automatically generated ID columns within parentheses in the order in which they were provided to the DataTableTemplate object at instantiation." >> {
+    "The nonAutoIdColumnNames method returns the names of the columns which are NOT automatically generated ID columns within parentheses in the order in which they were provided to the TableTemplate object at instantiation." >> {
       testTable.nonAutoIdColumnNames mustEqual "(name)"
     }
 
