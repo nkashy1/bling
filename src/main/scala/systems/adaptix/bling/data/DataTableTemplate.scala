@@ -6,16 +6,20 @@ import scalikejdbc._
  */
 
 class DataTableTemplate(val tableName: String, val columns: Seq[DataFieldInfo]) {
+  def sqlTableName = SQLSyntax.createUnsafely(tableName)
+
   def schema = columns.map( column =>
     s"${column.fieldName} ${column.sqlTypeDeclaration}"
     ).mkString(", ")
 
   def columnNames = s"(${ columns.map(_.fieldName).mkString(", ") })"
+  def sqlColumnNames = SQLSyntax.createUnsafely(columnNames)
 
   def nonAutoIdColumnNames = s"(${ columns.filter( {
     case _: AutoIdFieldInfo => false
     case _ => true
     } ).map(_.fieldName).mkString(", ") })"
+  def sqlNonAutoIdColumnNames = SQLSyntax.createUnsafely(nonAutoIdColumnNames)
 
   def create(implicit session: scalikejdbc.DBSession) = sql"${ sqlCreate }".execute.apply()
   def sqlCreate = {
