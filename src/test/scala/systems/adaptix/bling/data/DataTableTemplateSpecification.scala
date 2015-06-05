@@ -27,41 +27,45 @@ class DataTableTemplateSpecification extends Specification {
       testTable.columns mustEqual Seq(idColumn, nameColumn)
     }
 
-    "The sqlCreate method returns an SQLSyntax object which can be executed to actually create the table in a given database." >> {
+    "The schema method returns the table schema as a string." >> {
+      testTable.schema mustEqual "id SERIAL NOT NULL PRIMARY KEY, name TEXT"
+    }
+
+    "The columnNames method returns the names of the columns within parentheses in the order in which they were provided to the DataTableTemplate object at instantiation." >> {
+      testTable.columnNames mustEqual "(id, name)"
+    }
+
+    "The nonAutoIdColumnNames method returns the names of the columns which are NOT automatically generated ID columns within parentheses in the order in which they were provided to the DataTableTemplate object at instantiation." >> {
+      testTable.nonAutoIdColumnNames mustEqual "(name)"
+    }
+
+    "The sqlCreate method returns an SQLSyntax object which can be executed within an sql interpolation to actually create the table in a given database. The create method performs this execution." >> {
       val creationString = s"CREATE TABLE ${tableName} (id SERIAL NOT NULL PRIMARY KEY, name TEXT)"
       testTable.sqlCreate mustEqual SQLSyntax.createUnsafely(creationString)
     }
 
-    sql"${testTable.sqlCreate}".execute.apply()
-
-    "The sqlInsert method returns an SQLSyntax object which can be executed to insert the provided values into the table." >> {
-      pending
-    }
+    testTable.create
 
     val names = Seq("Akshay", "Bom", "Thor")
     var ids = Seq[Long]()
     for (i <- 0 to 2) {
-      ids = ids :+ sql"INSERT INTO ${SQLSyntax.createUnsafely(tableName)} (name) VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
+      ids = ids :+ sql"INSERT INTO ${SQLSyntax.createUnsafely(testTable.tableName)} ${SQLSyntax.createUnsafely(testTable.nonAutoIdColumnNames)} VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
     }
     ids(0) mustEqual 1
     ids(1) mustEqual 2
     ids(2) mustEqual 3
-
-    "The sqlSelect method returns an SQLSyntax object which can be executed to perform a selection of the specified columns with given constraints." in {
-      pending
-    }
 
     val testNames: List[TestName] = sql"SELECT * FROM ${SQLSyntax.createUnsafely(tableName)}".map(resultSet => TestName(resultSet)).list.apply()
     testNames(0) mustEqual TestName(1, Some("Akshay"))
     testNames(1) mustEqual TestName(2, Some("Bom"))
     testNames(2) mustEqual TestName(3, Some("Thor"))
 
-    "The sqlDrop method returns an SQLSyntax object which can be executed to drop the table from the active database." in {
+    "The sqlDrop method returns an SQLSyntax object which can be executed within an sql interpolation to drop the table from the active database. The drop method performs this execution." in {
       val dropString = s"DROP TABLE ${tableName}"
       testTable.sqlDrop mustEqual SQLSyntax.createUnsafely(dropString)
     }
 
-    sql"${testTable.sqlDrop}".execute.apply()
+    testTable.drop
 
     "In the process, we have replicated DbManipulationTest in a more dynamic way." >> {
       ok
