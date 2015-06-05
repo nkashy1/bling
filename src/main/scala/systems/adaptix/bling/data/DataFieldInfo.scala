@@ -1,7 +1,5 @@
 package systems.adaptix.bling.data
 
-import scalikejdbc._
-
 /**
  * Created by nkashyap on 6/4/15.
  */
