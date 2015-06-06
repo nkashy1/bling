@@ -41,11 +41,34 @@ class AbsorberSpecification extends Specification with AfterAll {
       absorber.tagIndexers must beEmpty
     }
 
-    "The Absorber's functionality is exposed via the absorb method." >> {
+    "The Absorber's functionality is exposed via the absorb method. It adds the data to the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
       val input1 = TaggedData(Map[String, Any]("name" -> "bob"), Set("lol"))
       absorber.absorb(input1)
-      absorber.tagIndexers.keySet must contain("lol")
-      sql"SELECT id FROM ${absorber.tagIndexers("lol").sqlTableName}".map(_.toMap).first.apply() mustEqual Some(Map[String, Any]("id".toUpperCase -> 1))
+      absorber.tagIndexers.keySet mustEqual Set("lol")
+
+      sql"SELECT id FROM ${absorber.tagIndexers("lol").sqlTableName}".map(_.toMap).first.apply() mustEqual Some(Map[String, Any]("ID" -> 1))
+
+      var dataTableSelection = sql"SELECT * FROM ${absorber.dataTemplate.sqlTableName}".map(_.toMap).list.apply()
+      dataTableSelection must haveSize(1)
+      dataTableSelection(0) mustEqual Map[String, Any]("ID" -> 1, "NAME" -> "bob")
+
+      val input2 = TaggedData(Map[String, Any]("name" -> "alice", "random" -> 4), Set("lol", "rofl"))
+      absorber.absorb(input2)
+      absorber.tagIndexers.keySet mustEqual Set("lol", "rofl")
+
+      val lolSelection = sql"SELECT id FROM ${absorber.tagIndexers("lol").sqlTableName}".map(_.toMap).list.apply().toSet
+      lolSelection must haveSize(2)
+      lolSelection must contain(Map[String, Any]("ID" -> 1))
+      lolSelection must contain(Map[String, Any]("ID" -> 2))
+
+      val roflSelection = sql"SELECT id FROM ${absorber.tagIndexers("rofl").sqlTableName}".map(_.toMap).list.apply().toSet
+      roflSelection must haveSize(1)
+      roflSelection must contain(Map[String, Any]("ID" -> 2))
+
+      dataTableSelection = sql"SELECT * FROM ${absorber.dataTemplate.sqlTableName}".map(_.toMap).list.apply()
+      dataTableSelection must haveSize(2)
+      dataTableSelection(0) mustEqual Map[String, Any]("ID" -> 1, "NAME" -> "bob")
+      dataTableSelection(1) mustEqual Map[String, Any]("ID" -> 2, "NAME" -> "alice", "RANDOM" -> 4)
     }
 
     "validateFields is a utility method that can be used to check if a given TaggedData object is appropriate for absorption in terms of the fields that it inserts values into." >> {
