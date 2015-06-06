@@ -1,7 +1,7 @@
 package systems.adaptix.bling.data
 
-import org.joda.time.DateTime
 import org.specs2.mutable.Specification
+import org.specs2.specification.AfterAll
 
 import scalikejdbc._
 import scalikejdbc.config._
@@ -9,7 +9,7 @@ import scalikejdbc.config._
 /**
  * Created by nkashyap on 6/5/15.
  */
-class AbsorberSpecification extends Specification {
+class AbsorberSpecification extends Specification with AfterAll {
   sequential
 
   DBs.setupAll()
@@ -24,6 +24,12 @@ class AbsorberSpecification extends Specification {
   val tagsTemplate = new TagTableTemplate("AbsorberSpecification_tags", "tag")
 
   val absorber = new Absorber(dataTemplate, tagsTemplate)
+
+  def afterAll = {
+    sql"${dataTemplate.sqlDrop}".execute.apply()
+    sql"${tagsTemplate.sqlDrop}".execute.apply()
+    absorber.tagIndexers.foreach(pair => sql"${pair._2.sqlDrop}".execute.apply())
+  }
 
   "The Absorber class allows TaggedData to be loaded into the table specified by a given TableTemplate in a database, with the tags being registered in a table specified by a TagTableTemplate." >> {
     "The dataTemplate and tagsTemplate TableTemplates specifying the schema of the data table and the tags table respectively are passed at instantiation." >> {
@@ -49,12 +55,5 @@ class AbsorberSpecification extends Specification {
       val invalidInput = TaggedData(Map[String, Any]("lol" -> "rofl", "name" -> "divid"), Set("rofl"))
       absorber.validateFields(invalidInput) must beFalse
     }
-  }
-
-  "Cleaning up." >> {
-    sql"${dataTemplate.sqlDrop}".execute.apply()
-    sql"${tagsTemplate.sqlDrop}".execute.apply()
-    absorber.tagIndexers.foreach(pair => sql"${pair._2.sqlDrop}".execute.apply())
-    ok
   }
 }
