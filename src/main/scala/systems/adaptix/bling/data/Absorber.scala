@@ -26,6 +26,9 @@ class Absorber(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTempla
 
   var tagIndexers = Map[String, IdTableTemplate]()
   def loadTagIndexers = {
+    /*
+     TODO: Right now, this is creating new IdTableTemplates for each of the tags, regardless of whether they were previous registered or not. In the future, we may want to introduce a check for when a new IdTableTemplate is required.
+      */
     val existingTags = sql"SELECT * FROM ${tagsTemplate.sqlTableName}".map(_.toMap).list.apply().map(_.head._2.toString)
     tagIndexers = Map[String, IdTableTemplate](existingTags zip existingTags.map( tag => new IdTableTemplate(tag, "id") ) :_*)
   }
