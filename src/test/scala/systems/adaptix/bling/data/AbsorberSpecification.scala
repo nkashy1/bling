@@ -69,6 +69,11 @@ class AbsorberSpecification extends Specification with AfterAll {
       dataTableSelection must haveSize(2)
       dataTableSelection(0) mustEqual Map[String, Any]("ID" -> 1, "NAME" -> "bob")
       dataTableSelection(1) mustEqual Map[String, Any]("ID" -> 2, "NAME" -> "alice", "RANDOM" -> 4)
+
+      val tagsTableSelection = sql"SELECT * FROM ${absorber.tagsTemplate.sqlTableName}".map(_.toMap).list.apply().toSet
+      tagsTableSelection must haveSize(2)
+      tagsTableSelection must contain(Map("TAG" -> "lol"))
+      tagsTableSelection must contain(Map("TAG" -> "rofl"))
     }
 
     "validateFields is a utility method that can be used to check if a given TaggedData object is appropriate for absorption in terms of the fields that it inserts values into." >> {
@@ -77,6 +82,11 @@ class AbsorberSpecification extends Specification with AfterAll {
 
       val invalidInput = TaggedData(Map[String, Any]("lol" -> "rofl", "name" -> "divid"), Set("rofl"))
       absorber.validateFields(invalidInput) must beFalse
+    }
+
+    "The loadTagIndexers method allows the tagIndexers member variable to be updated to reflect independent updates to the database." >> {
+      absorber.loadTagIndexers
+      absorber.tagIndexers.keySet mustEqual Set("lol", "rofl")
     }
   }
 }

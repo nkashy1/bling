@@ -12,13 +12,13 @@ class TableTemplate(val tableName: String, val columns: Seq[FieldInfo]) {
     s"${column.fieldName} ${column.sqlTypeDeclaration}"
     ).mkString(", ")
 
-  def columnNames = s"(${ columns.map(_.fieldName).mkString(", ") })"
+  def columnNames = s"${ columns.map(_.fieldName).mkString(", ") }"
   def sqlColumnNames = SQLSyntax.createUnsafely(columnNames)
 
-  def nonAutoIdColumnNames = s"(${ columns.filter( {
+  def nonAutoIdColumnNames = s"${ columns.filter( {
     case _: AutoIdFieldInfo => false
     case _ => true
-    } ).map(_.fieldName).mkString(", ") })"
+    } ).map(_.fieldName).mkString(", ") }"
   def sqlNonAutoIdColumnNames = SQLSyntax.createUnsafely(nonAutoIdColumnNames)
 
   def create(implicit session: scalikejdbc.DBSession) = sql"${ sqlCreate }".execute.apply()

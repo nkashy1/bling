@@ -31,12 +31,12 @@ class TableTemplateSpecification extends Specification {
       testTable.schema mustEqual "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR"
     }
 
-    "The columnNames method returns the names of the columns within parentheses in the order in which they were provided to the TableTemplate object at instantiation." >> {
-      testTable.columnNames mustEqual "(id, name)"
+    "The columnNames method returns the names of the columns (without parentheses) in the order in which they were provided to the TableTemplate object at instantiation." >> {
+      testTable.columnNames mustEqual "id, name"
     }
 
-    "The nonAutoIdColumnNames method returns the names of the columns which are NOT automatically generated ID columns within parentheses in the order in which they were provided to the TableTemplate object at instantiation." >> {
-      testTable.nonAutoIdColumnNames mustEqual "(name)"
+    "The nonAutoIdColumnNames method returns the names of the columns which are NOT automatically generated ID columns (without parentheses) in the order in which they were provided to the TableTemplate object at instantiation." >> {
+      testTable.nonAutoIdColumnNames mustEqual "name"
     }
 
     "The sqlCreate method returns an SQLSyntax object which can be executed within an sql interpolation to actually create the table in a given database. The create method performs this execution." >> {
@@ -49,7 +49,7 @@ class TableTemplateSpecification extends Specification {
     val names = Seq("Akshay", "Bom", "Thor")
     var ids = Seq[Long]()
     for (i <- 0 to 2) {
-      ids = ids :+ sql"INSERT INTO ${testTable.sqlTableName} ${testTable.sqlNonAutoIdColumnNames} VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
+      ids = ids :+ sql"INSERT INTO ${testTable.sqlTableName} (${testTable.sqlNonAutoIdColumnNames}) VALUES (${names(i)})".updateAndReturnGeneratedKey().apply()
     }
     ids(0) mustEqual 1
     ids(1) mustEqual 2

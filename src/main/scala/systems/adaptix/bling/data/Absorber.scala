@@ -24,11 +24,12 @@ class Absorber(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTempla
   createTableIfItDoesNotExist(dataTemplate)
   createTableIfItDoesNotExist(tagsTemplate)
 
-  private def loadTagIndexers: Map[String, IdTableTemplate] = {
+  var tagIndexers = Map[String, IdTableTemplate]()
+  def loadTagIndexers = {
     val existingTags = sql"SELECT * FROM ${tagsTemplate.sqlTableName}".map(_.toMap).list.apply().map(_.head._2.toString)
-    Map[String, IdTableTemplate](existingTags zip existingTags.map( tag => new IdTableTemplate(tag, "id") ) :_*)
+    tagIndexers = Map[String, IdTableTemplate](existingTags zip existingTags.map( tag => new IdTableTemplate(tag, "id") ) :_*)
   }
-  var tagIndexers: Map[String, IdTableTemplate] = loadTagIndexers
+  loadTagIndexers
   tagIndexers.foreach( pair => createTableIfItDoesNotExist(pair._2) )
 
   def absorb(input: TaggedData) = {
@@ -49,7 +50,11 @@ class Absorber(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTempla
   }
 
   private def registerNewTag(tag: String) = {
+    val sqlTag = SQLSyntax.createUnsafely(tag)
     val tagIndexer = new IdTableTemplate(tag, "id")
+    sql"SELECT ${tagsTemplate.sqlColumnNames} FROM ${tagsTemplate.sqlTableName} WHERE ${tagsTemplate.sqlColumnNames}=${tag}".map(_.toMap).first.apply().getOrElse(
+      sql"INSERT INTO ${tagsTemplate.sqlTableName} (${tagsTemplate.sqlColumnNames}) VALUES (${tag})".update.apply()
+    )
     createTableIfItDoesNotExist(tagIndexer)
     tagIndexers = tagIndexers + (tag -> tagIndexer)
     tagIndexer
