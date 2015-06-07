@@ -33,3 +33,6 @@ class TableTemplate(val tableName: String, val columns: Seq[FieldInfo]) {
     SQLSyntax.createUnsafely(s"DROP TABLE ${tableName}")
   }
 }
+
+class TagTableTemplate(tableName: String, val columnName: String) extends TableTemplate(tableName, Seq( PrimaryFieldInfo(columnName, "VARCHAR") ))
+class IdTableTemplate(tableName: String, val columnName: String) extends TableTemplate(tableName, Seq( PrimaryFieldInfo(columnName, "BIGINT") ))
