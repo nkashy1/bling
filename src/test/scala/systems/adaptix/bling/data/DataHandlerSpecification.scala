@@ -41,9 +41,9 @@ class DataHandlerSpecification extends Specification with AfterAll {
       dataHandler.tagIndexers must beEmpty
     }
 
-    "The DataHandler's functionality is exposed via the absorb method. It adds the data to the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
+    "The DataHandler's functionality is exposed via the insert method. It adds the data to the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
       val input1 = TaggedData(Map[String, Any]("name" -> "bob"), Set("lol"))
-      dataHandler.absorb(input1)
+      dataHandler.insert(input1)
       dataHandler.tagIndexers.keySet mustEqual Set("lol")
 
       sql"SELECT id FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).first.apply() mustEqual Some(Map[String, Any]("ID" -> 1))
@@ -53,7 +53,7 @@ class DataHandlerSpecification extends Specification with AfterAll {
       dataTableSelection(0) mustEqual Map[String, Any]("ID" -> 1, "NAME" -> "bob")
 
       val input2 = TaggedData(Map[String, Any]("name" -> "alice", "random" -> 4), Set("lol", "rofl"))
-      dataHandler.absorb(input2)
+      dataHandler.insert(input2)
       dataHandler.tagIndexers.keySet mustEqual Set("lol", "rofl")
 
       val lolSelection = sql"SELECT id FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).list.apply().toSet

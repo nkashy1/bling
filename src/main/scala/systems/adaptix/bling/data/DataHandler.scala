@@ -35,7 +35,7 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
   loadTagIndexers
   tagIndexers.foreach( pair => createTableIfItDoesNotExist(pair._2) )
 
-  def absorb(input: TaggedData) = {
+  def insert(input: TaggedData) = {
     val rowId = insertDataAndGetId(input.data)
     val relevantTagIndexers = input.tags.map(getIdTableTemplate)
     relevantTagIndexers.foreach( indexer => indexId(rowId, indexer) )
@@ -72,5 +72,5 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
     (input.data.keySet subsetOf columnNameSet) && (requiredFieldNameSet subsetOf input.data.keySet)
   }
 
-  def retrieve = None
+  def select = None
 }
