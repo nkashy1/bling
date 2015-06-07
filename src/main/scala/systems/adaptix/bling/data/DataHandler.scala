@@ -5,7 +5,7 @@ import scalikejdbc._
 /**
  * Created by nkashyap on 6/5/15.
  */
-class Absorber(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTemplate)(implicit session: scalikejdbc.DBSession) {
+class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTemplate)(implicit session: scalikejdbc.DBSession) {
   val columnNameSet = dataTemplate.columns.map(_.fieldName).toSet[String]
   val requiredFieldNameSet = dataTemplate.columns.filter({
     case _: SerialField => false
@@ -71,4 +71,6 @@ class Absorber(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTempla
   def validateFields(input: TaggedData): Boolean = {
     (input.data.keySet subsetOf columnNameSet) && (requiredFieldNameSet subsetOf input.data.keySet)
   }
+
+  def retrieve = None
 }
