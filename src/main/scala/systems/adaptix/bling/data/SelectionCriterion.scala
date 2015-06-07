@@ -1,6 +1,6 @@
 package systems.adaptix.bling.data
 
-import scalikejdbc.interpolation.SQLSyntax
+import scalikejdbc._
 
 /**
  * Created by nkashyap on 6/7/15.
@@ -8,32 +8,78 @@ import scalikejdbc.interpolation.SQLSyntax
 
 sealed trait SelectionCriterion {
   abstract def generateConstraints: (String, Seq[Any])
+
+  def asSql = {
+    val (constraints, values) = generateConstraints
+    sql"${SQLSyntax.createUnsafely(constraints)}".bind(values:_*)
+  }
 }
 
 
+object Eq extends OrderConstraint
+object Ne extends OrderConstraint
+object Lt extends OrderConstraint
+object Le extends OrderConstraint
+object Gt extends OrderConstraint
+object Ge extends OrderConstraint
 
+sealed trait OrderConstraint {
+  def asString = this match {
+    case Eq => "="
+    case Ne => "<>"
+    case Lt => "<"
+    case Le => "<="
+    case Gt => ">"
+    case Ge => ">="
+  }
 
-final case class AtomicCriterion(column: String, value: Any) extends SelectionCriterion {
-  def generateConstraints = (s"{$column} = ?", Seq(value))
+  def apply(column: String, value: Any): SelectionCriterion = OrderCriterion(this, column, value)
+}
+
+final case class OrderCriterion(constraintType: OrderConstraint, column: String, value: Any) extends SelectionCriterion {
+  def generateConstraints = (s"{$column} ${constraintType.asString} ?", Seq(value))
 }
 
 
-object And extends Junction{
-  val asString = " AND "
-  def apply(componentCriteria: SelectionCriterion*) = new CompoundCriterion(this, componentCriteria:_*)
+object Null {
+  def apply(column: String) = NullCriterion(true, column)
 }
-object Or extends Junction {
-  val asString = " OR "
-  def apply(componentCriteria: SelectionCriterion*) = new CompoundCriterion(this, componentCriteria:_*)
+object NotNull {
+  def apply(column: String) = NullCriterion(false, column)
 }
+
+final case class NullCriterion(isNull: Boolean, column: String) extends SelectionCriterion {
+  def generateConstraints = (s"${column} IS ${if (isNull) "" else " NOT "} NULL", Seq[Any]())
+}
+
 
 sealed trait Junction {
-  abstract def asString: String
+  def asString = this match {
+    case And => " AND "
+    case Or => " OR "
+  }
+
+  def apply(componentCriteria: SelectionCriterion*): SelectionCriterion = new JunctiveCriterion(this, componentCriteria:_*)
 }
 
-final class CompoundCriterion(junction: Junction, componentCriteria: SelectionCriterion*) {
+object And extends Junction
+object Or extends Junction
+
+final class JunctiveCriterion(junction: Junction, componentCriteria: SelectionCriterion*) extends SelectionCriterion {
   def generateConstraints = {
     val (componentStrings, componentValues) = componentCriteria.map(_.generateConstraints).unzip
     ( componentStrings.mkString(junction.asString), ( componentValues :\ Seq[Any]() )(_ ++ _) )
+  }
+}
+
+
+object Not {
+  def apply(criterionToNegate: SelectionCriterion): SelectionCriterion = InverseCriterion(criterionToNegate)
+}
+
+final case class InverseCriterion(componentCriterion: SelectionCriterion) extends SelectionCriterion {
+  def generateConstraints = {
+    val (componentString, componentValues) = componentCriterion.generateConstraints
+    ( s"NOT (${componentString})", componentValues)
   }
 }
