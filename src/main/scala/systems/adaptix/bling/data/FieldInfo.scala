@@ -10,7 +10,7 @@ sealed trait PrimaryKey extends FieldProperty
 sealed trait SerialField extends FieldProperty {
   val fieldType = "SERIAL"
 }
-sealed trait NotNull extends FieldProperty
+sealed trait NotNullField extends FieldProperty
 
 sealed trait FieldInfo {this: FieldProperty =>
   def fieldName: String
@@ -34,12 +34,12 @@ sealed trait FieldInfo {this: FieldProperty =>
   }
 
   private def isNotNull: Boolean = this match {
-    case _: NotNull => true
+    case _: NotNullField => true
     case _ => false
   }
 }
 
 final case class PlainFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PlainField
-final case class NotNullFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with NotNull
-final case class PrimaryFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PrimaryKey with NotNull
-final case class AutoIdFieldInfo(fieldName: String) extends FieldInfo with PrimaryKey with SerialField with NotNull
+final case class NotNullFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with NotNullField
+final case class PrimaryFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PrimaryKey with NotNullField
+final case class AutoIdFieldInfo(fieldName: String) extends FieldInfo with PrimaryKey with SerialField with NotNullField

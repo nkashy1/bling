@@ -9,7 +9,7 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
   val columnNameSet = dataTemplate.columns.map(_.fieldName).toSet[String]
   val requiredFieldNameSet = dataTemplate.columns.filter({
     case _: SerialField => false
-    case _: NotNull => true
+    case _: NotNullField => true
     case _ => false
   }).map(_.fieldName).toSet[String]
 

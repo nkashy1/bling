@@ -7,7 +7,7 @@ import scalikejdbc._
  */
 
 sealed trait SelectionCriterion {
-  abstract def generateConstraints: (String, Seq[Any])
+  def generateConstraints: (String, Seq[Any])
 
   def asSqlSyntaxWithValuesToBind: (SQLSyntax, Seq[Any]) = {
     val (constraints, values) = generateConstraints
