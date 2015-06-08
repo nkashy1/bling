@@ -15,9 +15,9 @@ class DataHandlerSpecification extends Specification with AfterAll {
   DBs.setupAll()
   implicit val session = AutoSession
 
-  val id = AutoIdFieldInfo("id")
-  val name = PlainFieldInfo("name", "VARCHAR")
-  val number = PlainFieldInfo("random", "INT")
+  val id = AutoIdFieldInfo("ID")
+  val name = PlainFieldInfo("NAME", "VARCHAR")
+  val number = PlainFieldInfo("RANDOM", "INT")
   val dataTemplate = new TableTemplate("AbsorberSpecification_data", Seq(id, name, number))
 
   val tag = PrimaryFieldInfo("tag", "VARCHAR")
@@ -42,26 +42,26 @@ class DataHandlerSpecification extends Specification with AfterAll {
     }
 
     "The DataHandler's functionality is exposed via the insert method. It adds the data to the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
-      val input1 = TaggedData(Map[String, Any]("name" -> "bob"), Set("lol"))
+      val input1 = TaggedData(Map[String, Any]("NAME" -> "bob"), Set("lol"))
       dataHandler.insert(input1)
       dataHandler.tagIndexers.keySet mustEqual Set("lol")
 
-      sql"SELECT id FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).first.apply() mustEqual Some(Map[String, Any]("ID" -> 1))
+      sql"SELECT ID FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).first.apply() mustEqual Some(Map[String, Any]("ID" -> 1))
 
       var dataTableSelection = sql"SELECT * FROM ${dataHandler.dataTemplate.sqlTableName}".map(_.toMap).list.apply()
       dataTableSelection must haveSize(1)
       dataTableSelection(0) mustEqual Map[String, Any]("ID" -> 1, "NAME" -> "bob")
 
-      val input2 = TaggedData(Map[String, Any]("name" -> "alice", "random" -> 4), Set("lol", "rofl"))
+      val input2 = TaggedData(Map[String, Any]("NAME" -> "alice", "RANDOM" -> 4), Set("lol", "rofl"))
       dataHandler.insert(input2)
       dataHandler.tagIndexers.keySet mustEqual Set("lol", "rofl")
 
-      val lolSelection = sql"SELECT id FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).list.apply().toSet
+      val lolSelection = sql"SELECT ID FROM ${dataHandler.tagIndexers("lol").sqlTableName}".map(_.toMap).list.apply().toSet
       lolSelection must haveSize(2)
       lolSelection must contain(Map[String, Any]("ID" -> 1))
       lolSelection must contain(Map[String, Any]("ID" -> 2))
 
-      val roflSelection = sql"SELECT id FROM ${dataHandler.tagIndexers("rofl").sqlTableName}".map(_.toMap).list.apply().toSet
+      val roflSelection = sql"SELECT ID FROM ${dataHandler.tagIndexers("rofl").sqlTableName}".map(_.toMap).list.apply().toSet
       roflSelection must haveSize(1)
       roflSelection must contain(Map[String, Any]("ID" -> 2))
 
@@ -77,10 +77,10 @@ class DataHandlerSpecification extends Specification with AfterAll {
     }
 
     "validateFields is a utility method that can be used to check if a given TaggedData object is appropriate for absorption in terms of the fields that it inserts values into." >> {
-      val validInput = TaggedData(Map[String, Any]("name" -> "bob", "random" -> 42), Set("lol"))
+      val validInput = TaggedData(Map[String, Any]("NAME" -> "bob", "RANDOM" -> 42), Set("lol"))
       dataHandler.validateFields(validInput) must beTrue
 
-      val invalidInput = TaggedData(Map[String, Any]("lol" -> "rofl", "name" -> "divid"), Set("rofl"))
+      val invalidInput = TaggedData(Map[String, Any]("lol" -> "rofl", "NAME" -> "divid"), Set("rofl"))
       dataHandler.validateFields(invalidInput) must beFalse
     }
 

@@ -16,7 +16,7 @@ class SelectionCriterionDbTest extends Specification with AfterAll {
   implicit val session = AutoSession
 
   val table = SQLSyntax.createUnsafely("SelectionCriterionDbTest_table")
-  sql"CREATE TABLE ${table} (id SERIAL NOT NULL PRIMARY KEY, name TEXT, value INT)".execute.apply()
+  sql"CREATE TABLE ${table} (ID SERIAL NOT NULL PRIMARY KEY, NAME TEXT, VALUE INT)".execute.apply()
 
   def afterAll = sql"DROP TABLE ${table}".execute.apply()
 
@@ -38,22 +38,22 @@ class SelectionCriterionDbTest extends Specification with AfterAll {
     result.map(row => row("ID")).toSet mustEqual Set(1, 3, 4, 5)
   }
 
-  "Select all rows where value is greater than 0 or name is equal to Bob." >> {
-    val criterion = Or(Gt("value", 0), Eq("name", "Bob"))
+  "Select all rows where value is greater than 0 or NAME is equal to Bob." >> {
+    val criterion = Or(Gt("VALUE", 0), Eq("NAME", "Bob"))
     val result = selectRowsSubjectTo(criterion.asSqlSyntaxWithValuesToBind)
     result must haveSize(5)
     result.map(row => row("ID")).toSet mustEqual Set(1,2,3,4,5)
   }
 
   "Select all rows which do not satisfy the condition of the previous test." >> {
-    val criterion = Not( Or(Gt("value", 0), Eq("name", "Bob")) )
+    val criterion = Not( Or(Gt("VALUE", 0), Eq("NAME", "Bob")) )
     val result = selectRowsSubjectTo(criterion.asSqlSyntaxWithValuesToBind)
     result must haveSize(1)
     result.map(row => row("ID")).toSet mustEqual Set(6)
   }
 
-  "Select all rows where value is negative or all rows where value is 0 and name is Bob." >> {
-    val criterion = Or( Lt("value", 0), And(Eq("value", 0), Eq("name", "Bob")) )
+  "Select all rows where VALUE is negative or all rows where VALUE is 0 and NAME is Bob." >> {
+    val criterion = Or( Lt("VALUE", 0), And(Eq("VALUE", 0), Eq("NAME", "Bob")) )
     val result = selectRowsSubjectTo(criterion.asSqlSyntaxWithValuesToBind)
     result must haveSize(2)
     result.map(row => row("ID")).toSet mustEqual Set(2,6)
