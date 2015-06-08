@@ -93,8 +93,8 @@ class SelectionCriterionSpecification extends Specification {
       }
 
       "Each of these objects can also accept compound SelectionCriteria as their inputs." >> {
-        val constraint1 = Or( Not(Eq(col1, val1)), And(Eq(col1, val1), Eq(col2, val2), Eq(col3, val3)) )
-        constraint1.generateConstraints mustEqual (s"(NOT (${col1} = ?)) OR ((${col1} = ?) AND (${col2} = ?) AND (${col3} = ?))", Seq[Any](val1, val1, val2, val3))
+        val constraint = Or( Not(Eq(col1, val1)), And(Eq(col1, val1), Eq(col2, val2), Eq(col3, val3)) )
+        constraint.generateConstraints mustEqual (s"(NOT (${col1} = ?)) OR ((${col1} = ?) AND (${col2} = ?) AND (${col3} = ?))", Seq[Any](val1, val1, val2, val3))
       }
     }
   }
