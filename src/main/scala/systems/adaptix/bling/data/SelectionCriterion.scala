@@ -7,6 +7,7 @@ import scalikejdbc._
  */
 
 sealed trait SelectionCriterion {
+  // TODO: There could be an issue here about how values are bound. Depends on the SQL parser. If parsing is done left-to-right, then what this method is doing now with compound constraints is alright.
   def generateConstraints: (String, Seq[Any])
 
   def asSqlSyntaxWithValuesToBind: (SQLSyntax, Seq[Any]) = {
@@ -37,7 +38,7 @@ sealed trait OrderConstraint {
 }
 
 final case class OrderCriterion(constraintType: OrderConstraint, column: String, value: Any) extends SelectionCriterion {
-  def generateConstraints = (s"{$column} ${constraintType.asString} ?", Seq(value))
+  def generateConstraints = (s"${column} ${constraintType.asString} ?", Seq(value))
 }
 
 
@@ -49,14 +50,14 @@ object NotNull {
 }
 
 final case class NullCriterion(isNull: Boolean, column: String) extends SelectionCriterion {
-  def generateConstraints = (s"${column} IS ${if (isNull) "" else " NOT "} NULL", Seq[Any]())
+  def generateConstraints = (s"${column}" + {if (isNull) " IS NULL" else " IS NOT NULL"}, Seq[Any]())
 }
 
 
 sealed trait Junction {
   def asString = this match {
-    case And => " AND "
-    case Or => " OR "
+    case And => "AND"
+    case Or => "OR"
   }
 
   def apply(componentCriteria: SelectionCriterion*): SelectionCriterion = new JunctiveCriterion(this, componentCriteria:_*)
@@ -68,7 +69,7 @@ object Or extends Junction
 final class JunctiveCriterion(junction: Junction, componentCriteria: SelectionCriterion*) extends SelectionCriterion {
   def generateConstraints = {
     val (componentStrings, componentValues) = componentCriteria.map(_.generateConstraints).unzip
-    ( componentStrings.mkString(junction.asString), ( componentValues :\ Seq[Any]() )(_ ++ _) )
+    ( "(" + componentStrings.mkString(s") ${junction.asString} (") + ")" , ( componentValues :\ Seq[Any]() )(_ ++ _) )
   }
 }
 
