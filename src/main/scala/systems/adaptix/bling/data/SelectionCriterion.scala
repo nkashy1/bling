@@ -74,10 +74,10 @@ final class JunctiveCriterion(junction: Junction, componentCriteria: SelectionCr
 
 
 object Not {
-  def apply(criterionToNegate: SelectionCriterion): SelectionCriterion = InverseCriterion(criterionToNegate)
+  def apply(criterionToNegate: SelectionCriterion): SelectionCriterion = NegativeCriterion(criterionToNegate)
 }
 
-final case class InverseCriterion(componentCriterion: SelectionCriterion) extends SelectionCriterion {
+final case class NegativeCriterion(componentCriterion: SelectionCriterion) extends SelectionCriterion {
   def generateConstraints = {
     val (componentString, componentValues) = componentCriterion.generateConstraints
     ( s"NOT (${componentString})", componentValues)
