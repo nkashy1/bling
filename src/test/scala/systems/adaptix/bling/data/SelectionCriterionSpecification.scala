@@ -97,5 +97,11 @@ class SelectionCriterionSpecification extends Specification {
         constraint.generateConstraints mustEqual (s"(NOT (${col1} = ?)) OR ((${col1} = ?) AND (${col2} = ?) AND (${col3} = ?))", Seq[Any](val1, val1, val2, val3))
       }
     }
+
+    "In addition, there is also a NoCriterion singleton object which reflects that no constraints are being imposed on a selection." >> {
+      NoCriterion.generateConstraints mustEqual ("", Seq())
+      NoCriterion.asSqlSyntaxWithValuesToBind
+      ok
+    }
   }
 }
