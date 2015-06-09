@@ -90,7 +90,16 @@ class DataHandlerSpecification extends Specification with AfterAll {
     }
 
     "The select method allows data to be extracted from the data table." >> {
-      pending
+      val fullData = dataHandler.select(AllColumns)
+      fullData.map(row => row("ID")).toSet mustEqual Set(1,2)
+
+      val lolIndexer = dataHandler.tagIndexers("lol")
+      val lolData = dataHandler.select( AllColumns, In("ID", lolIndexer.tableName, SomeColumns(Seq(lolIndexer.columnName))))
+      lolData.map(row => row("ID")).toSet mustEqual Set(1,2)
+
+      val roflIndexer = dataHandler.tagIndexers("rofl")
+      val roflData = dataHandler.select( AllColumns, In("ID", roflIndexer.tableName, AllColumns) )
+      roflData.map(row => row("ID")).toSet mustEqual Set(2)
     }
   }
 }
