@@ -59,6 +59,31 @@ final case class NullCriterion(isNull: Boolean, column: String) extends Selectio
 }
 
 
+object In {
+  def apply(column: String, tableName: String, tableColumns: DesiredColumns = AllColumns, tableCriterion: SelectionCriterion = NoCriterion) = InCriterion(column, tableName, tableColumns, tableCriterion)
+}
+
+final case class InCriterion(column: String, tableName: String, tableColumns: DesiredColumns, tableCriterion: SelectionCriterion) extends SelectionCriterion {
+  def generateConstraints = tableCriterion match {
+    case NoCriterion => (s"${column} IN (SELECT ${tableColumns.asString} FROM ${tableName})", Seq[Any]())
+    case _ => {
+      val (criterionString, criterionValuesToBind) = tableCriterion.generateConstraints
+      (s"${column} IN (SELECT ${tableColumns.asString} FROM ${tableName} WHERE ${criterionString})", criterionValuesToBind)
+    }
+  }
+}
+
+sealed trait DesiredColumns {
+  def asString = this match {
+    case AllColumns => "*"
+    case desired: SomeColumns => desired.columns.mkString(", ")
+  }
+}
+
+object AllColumns extends DesiredColumns
+final case class SomeColumns(columns: Seq[String]) extends DesiredColumns
+
+
 sealed trait Junction {
   def asString = this match {
     case And => "AND"

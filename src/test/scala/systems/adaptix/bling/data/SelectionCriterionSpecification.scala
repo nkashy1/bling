@@ -9,16 +9,18 @@ import scalikejdbc._
  */
 class SelectionCriterionSpecification extends Specification {
   """SelectionCriterion is an algebraic data type. It is a union of the following subtypes:
-    | 1. OrderCriterion,
-    | 2. NullCriterion,
-    | 3. JunctiveCriterion,
-    | 4. NegativeCriterion.
+    | 1. NoCriterion
+    | 2. OrderCriterion,
+    | 3. NullCriterion,
+    | 4. InCriterion
+    | 5. JunctiveCriterion,
+    | 6. NegativeCriterion.
     |
     | A SelectionCriterion provides two methods:
     | 1. generateConstraints returns an ordered pair of type (String, Seq[Any]). The String represents the portion of an SQL SELECT statement occurring after a WHERE clause with \"?\"s where values are to be specified. The Seq[Any] contains the actual values being specified.
     | 2. asSqlSyntaxWithValuesToBind returns an ordered pair of type (scalikejdbc.SQLSyntax, Seq[Any]) by simply converting the first coordinate of the generateConstraints return value into SQLSyntax.
     |
-    | SelectionCriteria are meant to be constructed by calling the associated objects -- Eq, Ne, Lt, Le, Gt, Ge, Null, NotNull, And, Or, and Not.
+    | SelectionCriteria are meant to be constructed by calling the associated objects -- Eq, Ne, Lt, Le, Gt, Ge, In, Null, NotNull, And, Or, and Not.
   """.stripMargin >> {
     "Eq, Ne, Lt, Le, Gt, Ge, Null, and NotNull generate atomic SelectionCriteria in the sense that they represent direct constraints on column values." >> {
       val column = "answer"
@@ -67,6 +69,26 @@ class SelectionCriterionSpecification extends Specification {
       }
     }
 
+    "In generates a SelectionCriterion representing the constraint that the value in the given column be present in the selection of given tableColumns from the table with given tableName which satisfy the given tableCriterion." >> {
+      val column = "ANSWER"
+      val tableName = "OTHER_TABLE"
+      val tableColumns = SomeColumns(Seq("SPECIFIC_COLUMNS"))
+      val otherColumn = "ANOTHER_SPECIFIC_COLUMN"
+      val otherColumnValue = 0
+      val tableConstraint = Eq(otherColumn, otherColumnValue)
+
+      "It can be used to generate a constraint specifying that the value in a given column simply be in the specified column of the specified table." >> {
+        val constraint = In(column, tableName, tableColumns).generateConstraints
+        constraint mustEqual (s"${column} IN (SELECT ${tableColumns.asString} FROM ${tableName})", Seq[Any]())
+      }
+
+      "Or even by imposing a further constraint on the inner selection." >> {
+        val constraint = In(column, tableName, tableColumns, tableConstraint).generateConstraints
+        val subConstraint = tableConstraint.generateConstraints
+        constraint mustEqual (s"${column} IN (SELECT ${tableColumns.asString} FROM ${tableName} WHERE ${subConstraint._1})", subConstraint._2)
+      }
+    }
+
     "And, Or, and Not generate compound SelectionCriteria in the sense that they represent logical operations on other SelectionCriteria." >> {
       val col1 = "answer"
       val val1 = 42
@@ -98,7 +120,7 @@ class SelectionCriterionSpecification extends Specification {
       }
     }
 
-    "In addition, there is also a NoCriterion singleton object which reflects that no constraints are being imposed on a selection." >> {
+    "There is also a NoCriterion singleton object which reflects that no constraints are being imposed on a selection." >> {
       NoCriterion.generateConstraints mustEqual ("", Seq())
       NoCriterion.asSqlSyntaxWithValuesToBind
       ok

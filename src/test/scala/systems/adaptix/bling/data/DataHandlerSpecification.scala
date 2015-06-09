@@ -31,7 +31,7 @@ class DataHandlerSpecification extends Specification with AfterAll {
     dataHandler.tagIndexers.foreach(pair => sql"${pair._2.sqlDrop}".execute.apply())
   }
 
-  "The DataHandler class allows TaggedData to be loaded into the table specified by a given TableTemplate in a database, with the tags being registered in a table specified by a TagTableTemplate." >> {
+  "The DataHandler class allows TaggedData to be loaded into and extracted from the table specified by a given TableTemplate in a database, with the tags being registered in a table specified by a TagTableTemplate." >> {
     "The dataTemplate and tagsTemplate TableTemplates specifying the schema of the data table and the tags table respectively are passed at instantiation." >> {
       dataHandler.dataTemplate mustEqual dataTemplate
       dataHandler.tagsTemplate mustEqual tagsTemplate
@@ -41,7 +41,7 @@ class DataHandlerSpecification extends Specification with AfterAll {
       dataHandler.tagIndexers must beEmpty
     }
 
-    "The DataHandler's functionality is exposed via the insert method. It adds the data to the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
+    "The insert method loads data into the specified data table and adds the generated ID for the given data to the relevant tag indexers." >> {
       val input1 = TaggedData(Map[String, Any]("NAME" -> "bob"), Set("lol"))
       dataHandler.insert(input1)
       dataHandler.tagIndexers.keySet mustEqual Set("lol")
@@ -87,6 +87,10 @@ class DataHandlerSpecification extends Specification with AfterAll {
     "The loadTagIndexers method allows the tagIndexers member variable to be updated to reflect independent updates to the database." >> {
       dataHandler.loadTagIndexers
       dataHandler.tagIndexers.keySet mustEqual Set("lol", "rofl")
+    }
+
+    "The select method allows data to be extracted from the data table." >> {
+      pending
     }
   }
 }

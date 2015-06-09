@@ -15,7 +15,8 @@ class SelectionCriterionDbTest extends Specification with AfterAll {
   DBs.setupAll()
   implicit val session = AutoSession
 
-  val table = SQLSyntax.createUnsafely("SelectionCriterionDbTest_table")
+  val tableName = "SelectionCriterionDbTest_table"
+  val table = SQLSyntax.createUnsafely(tableName)
   sql"CREATE TABLE ${table} (ID SERIAL NOT NULL PRIMARY KEY, NAME TEXT, VALUE INT)".execute.apply()
 
   def afterAll = sql"DROP TABLE ${table}".execute.apply()
@@ -57,5 +58,12 @@ class SelectionCriterionDbTest extends Specification with AfterAll {
     val result = selectRowsSubjectTo(criterion.asSqlSyntaxWithValuesToBind)
     result must haveSize(2)
     result.map(row => row("ID")).toSet mustEqual Set(2,6)
+  }
+
+  "Select all ID where VALUE is greater than 4 using an IN statement." >> {
+    val criterion = In("ID", tableName, SomeColumns(Seq("ID")), Gt("VALUE", 4))
+    val result = selectRowsSubjectTo(criterion.asSqlSyntaxWithValuesToBind)
+    result must haveSize(3)
+    result.map(row => row("ID")).toSet mustEqual Set(1,3,5)
   }
 }
