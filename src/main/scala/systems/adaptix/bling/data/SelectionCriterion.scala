@@ -17,6 +17,11 @@ sealed trait SelectionCriterion {
 }
 
 
+object NoCriterion extends SelectionCriterion {
+  def generateConstraints = ("", Seq())
+}
+
+
 object Eq extends OrderConstraint
 object Ne extends OrderConstraint
 object Lt extends OrderConstraint
