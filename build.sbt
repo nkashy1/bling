@@ -16,5 +16,8 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.6" % "test",
   "ch.qos.logback" % "logback-classic" % "1.1.3",
   "com.h2database" % "h2" % "1.4.187",
-  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
+  "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
+  "org.json4s" %% "json4s-native" % "3.2.11"
 )
+
+scalacOptions ++= Seq("-Xmax-classfile-name", "255")
