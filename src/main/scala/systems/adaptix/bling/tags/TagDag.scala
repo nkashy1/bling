@@ -2,7 +2,7 @@ package systems.adaptix.bling.tags
 
 import java.util.NoSuchElementException
 
-import systems.adaptix.bling.tags.graph.{RootedDag, DagVertex}
+import graph.{RootedDag, DagVertex}
 import scala.collection.mutable
 
 /**
