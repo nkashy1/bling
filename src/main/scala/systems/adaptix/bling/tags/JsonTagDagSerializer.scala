@@ -12,8 +12,6 @@ import graph._
  * Created by nkashyap on 6/10/15.
  */
 class JsonTagDagSerializer extends TagDagSerializer {
-  type SerializedTagDag = String
-
   case class TagDagSerializationInfo(universalTag: String, parentsAndChildren: Map[ String, Set[String] ])
 
   def serialize(tagDag: TagDag) = {
@@ -41,7 +39,7 @@ class JsonTagDagSerializer extends TagDagSerializer {
     compact(render(json))
   }
 
-  def deserialize(serialization: SerializedTagDag) = {
+  def deserialize(serialization: String) = {
     implicit val format = DefaultFormats
     val intermediary = parse(serialization).extract[TagDagSerializationInfo]
     val tagDag = TagDag(intermediary.universalTag)

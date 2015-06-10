@@ -5,7 +5,6 @@ package systems.adaptix.bling.tags
  */
 
 trait TagDagSerializer {
-  type SerializedTagDag
-  def serialize(tagDag: TagDag): SerializedTagDag
-  def deserialize(serialization: SerializedTagDag): TagDag
+  def serialize(tagDag: TagDag): String
+  def deserialize(serialization: String): TagDag
 }
