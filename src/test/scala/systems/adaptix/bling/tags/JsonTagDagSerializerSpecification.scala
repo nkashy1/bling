@@ -14,7 +14,7 @@ class JsonTagDagSerializerSpecification extends Specification {
   "The JsonTagDagSerializer provides methods to serialize TagDags as JSON strings, and deserialize JSON strings representing TagDags back to TagDag objects." >> {
     implicit val formats = DefaultFormats
 
-    val serializer = new JsonTagDagSerializer
+    val serializer = new JsonTagDagSerializer {}
 
     "The serialize method converts a TagDag to a JSON string." >> {
       val tagDag = TagDag("root")
@@ -26,7 +26,7 @@ class JsonTagDagSerializerSpecification extends Specification {
 
       val serialization = serializer.serialize(tagDag)
       val json = parse(serialization)
-      val extractedSerializationInfo = json.extract[JsonTagDagSerializer#TagDagSerializationInfo]
+      val extractedSerializationInfo = json.extract[TagDagSerializationInfo]
 
       extractedSerializationInfo.universalTag mustEqual tagDag.universalTag
 

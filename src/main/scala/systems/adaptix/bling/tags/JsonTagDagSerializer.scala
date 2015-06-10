@@ -11,9 +11,7 @@ import graph._
 /**
  * Created by nkashyap on 6/10/15.
  */
-class JsonTagDagSerializer extends TagDagSerializer {
-  case class TagDagSerializationInfo(universalTag: String, parentsAndChildren: Map[ String, Set[String] ])
-
+trait JsonTagDagSerializer extends TagDagSerializer {
   def serialize(tagDag: TagDag) = {
     val parentsAndChildren = Queue[ (String, Set[String]) ]()
     val itinerary = Queue[DagVertex](tagDag.root)
