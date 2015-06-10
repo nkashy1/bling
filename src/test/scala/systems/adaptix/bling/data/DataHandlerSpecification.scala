@@ -20,8 +20,8 @@ class DataHandlerSpecification extends Specification with AfterAll {
   val number = PlainFieldInfo("RANDOM", "INT")
   val dataTemplate = new TableTemplate("AbsorberSpecification_data", Seq(id, name, number))
 
-  val tag = PrimaryFieldInfo("tag", "VARCHAR")
-  val tagsTemplate = new TagTableTemplate("AbsorberSpecification_tags", "tag")
+  val tag = PrimaryFieldInfo("TAG", "VARCHAR")
+  val tagsTemplate = new TagTableTemplate("AbsorberSpecification_tags", "TAG")
 
   val dataHandler = new DataHandler(dataTemplate, tagsTemplate)
 
@@ -89,7 +89,7 @@ class DataHandlerSpecification extends Specification with AfterAll {
       dataHandler.tagIndexers.keySet mustEqual Set("lol", "rofl")
     }
 
-    "The select method allows data to be extracted from the data table." >> {
+    "The select method allows data to be extracted from a given table, which is the data table by default." >> {
       val fullData = dataHandler.select(AllColumns)
       fullData.map(row => row("ID")).toSet mustEqual Set(1,2)
 
@@ -100,6 +100,9 @@ class DataHandlerSpecification extends Specification with AfterAll {
       val roflIndexer = dataHandler.tagIndexers("rofl")
       val roflData = dataHandler.select( AllColumns, In("ID", roflIndexer.tableName, AllColumns) )
       roflData.map(row => row("ID")).toSet mustEqual Set(2)
+
+      val tags = dataHandler.select(AllColumns, NoCriterion, tagsTemplate)
+      tags.map(row => row("TAG")).toSet mustEqual Set("lol", "rofl")
     }
   }
 }

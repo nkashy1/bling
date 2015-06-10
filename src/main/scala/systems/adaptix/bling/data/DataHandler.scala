@@ -72,14 +72,14 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
     (input.data.keySet subsetOf columnNameSet) && (requiredFieldNameSet subsetOf input.data.keySet)
   }
 
-  def select(targetColumns: DesiredColumns, criterion: SelectionCriterion = NoCriterion): Seq[Map[String, Any]] = {
+  def select(targetColumns: DesiredColumns, criterion: SelectionCriterion = NoCriterion, tableTemplate: TableTemplate = dataTemplate): Seq[Map[String, Any]] = {
     val columnsSql = SQLSyntax.createUnsafely(s"${targetColumns.asString}")
 
     criterion match {
-      case NoCriterion => sql"SELECT ${columnsSql} FROM ${dataTemplate.sqlTableName}".map(_.toMap).list.apply()
+      case NoCriterion => sql"SELECT ${columnsSql} FROM ${tableTemplate.sqlTableName}".map(_.toMap).list.apply()
       case _ => {
         val (criterionSqlSyntax, criterionValuesToBind) = criterion.asSqlSyntaxWithValuesToBind
-        sql"SELECT ${columnsSql} FROM ${dataTemplate.sqlTableName} WHERE ${criterionSqlSyntax}".bind(criterionValuesToBind:_*).map(_.toMap).list.apply()
+        sql"SELECT ${columnsSql} FROM ${tableTemplate.sqlTableName} WHERE ${criterionSqlSyntax}".bind(criterionValuesToBind:_*).map(_.toMap).list.apply()
       }
     }
   }
