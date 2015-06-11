@@ -27,16 +27,13 @@ trait BlingConsole { this: TagDagSerializer =>
   def loadData(data: RawData) = dataHandler.insert(convertToTaggedData(data))
   def extractData(columns: DesiredColumns, criterion: SelectionCriterion = NoCriterion, tag: Tag = tagDag.universalTag, mode: ExtractionMode = DisjunctiveMode): Seq[BlingData] = {
     val descendantDataTags = tagDag.descendants(tag).toSet intersect dataTags
-    val tagConstraint = mode match {
-      case DisjunctiveMode => Or(
-        descendantDataTags.map(tag => In(blingId, dataHandler.tagIndexers(tag).tableName, AllColumns))
-          .toSeq: _*
+    val tagConstraint = (mode match {
+      case DisjunctiveMode => Or
+      case ConjunctiveMode => And
+    })(
+      descendantDataTags.map(tag => In(blingId, dataHandler.tagIndexers(tag).tableName, AllColumns))
+        .toSeq: _*
       )
-      case ConjunctiveMode => And(
-        descendantDataTags.map(tag => In(blingId, dataHandler.tagIndexers(tag).tableName, AllColumns))
-          .toSeq: _*
-      )
-    }
     criterion match {
       case NoCriterion => dataHandler.select(columns, tagConstraint).map( row => convertToBlingData(row) )
       case _ => dataHandler.select(columns, And(tagConstraint, criterion)).map( row => convertToBlingData(row) )
