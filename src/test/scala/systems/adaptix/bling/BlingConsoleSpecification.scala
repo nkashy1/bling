@@ -76,13 +76,16 @@ class BlingConsoleSpecification extends Specification with AfterAll {
      selection2.map(_(console.blingId)).toSet mustEqual Set(2)
    }
 
-   "extractData also accepts as its third, tag argument tags in the tagDag which are not necessarily present in the tags table of the database." >> {
+   "extractData also accepts as its third, tag argument tags in the tagDag which are not necessarily present in the tags table of the database. The extraction mode argument specifies whether the query should return the data point satisfying the given criterion which are tagged with AT LEAST ONE of the descendants of the given tag (DisjunctiveMode) or ALL its descendants (ConjunctiveMode)." >> {
      tagDag.insertTag("laugh")
      tagDag.pushChild("BLINGCONSOLESPECIFICATION_LOL", "laugh")
      tagDag.pushChild("BLINGCONSOLESPECIFICATION_ROFL", "laugh")
 
-     val selection = console.extractData(AllColumns, NoCriterion, "laugh")
-     selection.map(_(console.blingId)).toSet mustEqual Set(1, 2)
+     val disjunctiveSelection = console.extractData(AllColumns, NoCriterion, "laugh", DisjunctiveMode)
+     disjunctiveSelection.map(_(console.blingId)).toSet mustEqual Set(1, 2)
+
+     val conjunctiveSelection = console.extractData(AllColumns, NoCriterion, "laugh", ConjunctiveMode)
+     conjunctiveSelection.map(_(console.blingId)).toSet mustEqual Set(1)
    }
 
    "The dataTags methods returns the Set of tags stored in the tags table of the database." >> {
