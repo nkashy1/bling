@@ -27,11 +27,14 @@ trait BlingConsole { this: TagDagSerializer =>
   def loadData(data: RawData) = dataHandler.insert(convertToTaggedData(data))
   def extractData(columns: DesiredColumns, criterion: SelectionCriterion = NoCriterion, tag: Tag = tagDag.universalTag): Seq[BlingData] = {
     val descendantDataTags = tagDag.descendants(tag).toSet intersect dataTags
-    val tagConstraint = And(
+    val tagConstraint = Or(
       descendantDataTags.map( tag => In(blingId, dataHandler.tagIndexers(tag).tableName, AllColumns) )
         .toSeq:_*
     )
-    dataHandler.select(columns, And(tagConstraint, criterion)).map( row => convertToBlingData(row) )
+    criterion match {
+      case NoCriterion => dataHandler.select(columns, tagConstraint).map( row => convertToBlingData(row) )
+      case _ => dataHandler.select(columns, And(tagConstraint, criterion)).map( row => convertToBlingData(row) )
+    }
   }
 
   def saveTagDag(fileName: String = tagDagFileName) = {
@@ -43,5 +46,5 @@ trait BlingConsole { this: TagDagSerializer =>
   }
 
   def dataTags: Set[Tag] = dataHandler.select(AllColumns, NoCriterion, dataHandler.tagsTemplate).map(row => row.head._2.asInstanceOf[Tag]).toSet[Tag]
-  def refreshTagDag = dataTags.foreach( tag => {if (!(tagDag hasTag tag)) tagDag.insertTag(tag)} )
+  def refreshTagDag() = dataTags.foreach( tag => {if (!(tagDag hasTag tag)) tagDag.insertTag(tag)} )
 }
