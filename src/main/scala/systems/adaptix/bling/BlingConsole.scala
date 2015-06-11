@@ -13,17 +13,17 @@ trait BlingConsole { this: TagDagSerializer =>
   type RawData
   type BlingData
 
+  def convertToTaggedData(data: RawData): TaggedData
+  def convertToBlingData(data: Map[String, Any]): BlingData
+
   type Tag = TagDag#Tag
 
-  val session: scalikejdbc.DBSession // Can be defined implicitly at instantiation as: val session = implicitly[scalikejdbc.DBSession]
+  //implicit val session: scalikejdbc.DBSession // Can be defined implicitly at instantiation as: implicit val session = implicitly[scalikejdbc.DBSession]
   val dataHandler: DataHandler
   var tagDag: TagDag
 
   val tagDagFileName: String
   val blingId: String
-
-  def convertToTaggedData(data: RawData): TaggedData
-  def convertToBlingData(data: Map[String, Any]): BlingData
 
   def loadData(data: RawData) = dataHandler.insert(convertToTaggedData(data))
   def extractData(columns: DesiredColumns, criterion: SelectionCriterion = NoCriterion, tag: Tag = tagDag.universalTag): Seq[BlingData] = {

@@ -18,10 +18,10 @@ class DataHandlerSpecification extends Specification with AfterAll {
   val id = AutoIdFieldInfo("ID")
   val name = PlainFieldInfo("NAME", "VARCHAR")
   val number = PlainFieldInfo("RANDOM", "INT")
-  val dataTemplate = new TableTemplate("AbsorberSpecification_data", Seq(id, name, number))
+  val dataTemplate = new TableTemplate("DATAHANDLERSPECIFICATION_DATA", Seq(id, name, number))
 
   val tag = PrimaryFieldInfo("TAG", "VARCHAR")
-  val tagsTemplate = new TagTableTemplate("AbsorberSpecification_tags", "TAG")
+  val tagsTemplate = new TagTableTemplate("DATAHANDLERSPECIFICATION_TAGS", "TAG")
 
   val dataHandler = new DataHandler(dataTemplate, tagsTemplate)
 

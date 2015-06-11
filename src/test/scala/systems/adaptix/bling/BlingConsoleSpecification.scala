@@ -16,7 +16,7 @@ class BlingConsoleSpecification extends Specification with AfterAll {
   sequential
 
   DBs.setupAll()
-  implicit val session = AutoSession
+  implicit val outerSession = AutoSession
 
   val blingId = "BLING_ID"
   val id = AutoIdFieldInfo(blingId)
@@ -29,20 +29,26 @@ class BlingConsoleSpecification extends Specification with AfterAll {
 
   val dataHandler = new DataHandler(dataTemplate, tagsTemplate)
 
-  val aliceData = TaggedData(Map("NAME"->"alice", "RANDOM"->4), Set("lol", "rofl"))
-  val bobData = TaggedData(Map("NAME"->"bob", "RANDOM"->42), Set("lol"))
+  val aliceData = TaggedData(Map("NAME"->"alice", "RANDOM"->4), Set("BLINGCONSOLESPECIFICATION_lol", "BLINGCONSOLESPECIFICATION_rofl"))
+  val bobData = TaggedData(Map("NAME"->"bob", "RANDOM"->42), Set("BLINGCONSOLESPECIFICATION_lol"))
   dataHandler.insert(aliceData)
   dataHandler.insert(bobData)
 
   val tagDag = TagDag("global")
 
-  /*
-  val blingConsole = new BlingConsole with JsonTagDagSerializer {
-    val dataHandler = dataHandler
-    var tagDag = tagDag
+  val console = new BlingConsole with JsonTagDagSerializer {
+    type RawData = TaggedData
+    type BlingData = Map[String, Any]
 
+    def convertToTaggedData(data: RawData) = data
+    def convertToBlingData(data: Map[String, Any]) = data
 
-  }*/
+    val dataHandler = BlingConsoleSpecification.this.dataHandler
+    var tagDag = BlingConsoleSpecification.this.tagDag
+
+    val tagDagFileName = "tagDag.txt"
+    val blingId = BlingConsoleSpecification.this.blingId
+  }
 
   def afterAll = {
     sql"${dataTemplate.sqlDrop}".execute.apply()
@@ -51,6 +57,8 @@ class BlingConsoleSpecification extends Specification with AfterAll {
   }
 
  "BlingConsole is the only point of contact between bling and its users. As such, it exposes a variety of functionality." >> {
-   pending
+   "The loadData method loads data into the database." >> {
+     pending
+   }
  }
 }
