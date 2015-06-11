@@ -18,8 +18,7 @@ trait BlingConsole { this: TagDagSerializer =>
 
   type Tag = TagDag#Tag
 
-  //implicit val session: scalikejdbc.DBSession // Can be defined implicitly at instantiation as: implicit val session = implicitly[scalikejdbc.DBSession]
-  val dataHandler: DataHandler
+  val dataHandler: DataHandler // Requires an implicit scalikejdbc.DBSession to be defined in an outer scope.
   var tagDag: TagDag
 
   val tagDagFileName: String
