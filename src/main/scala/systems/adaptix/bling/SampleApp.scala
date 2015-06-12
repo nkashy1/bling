@@ -13,7 +13,7 @@ import tags._
 /**
  * Created by nkashyap on 6/11/15.
  */
-object BlingApp extends App {
+object SampleApp extends App {
   val conf = ConfigFactory.load()
   val consoleConfig = conf.getConfig("console")
 
@@ -46,11 +46,11 @@ object BlingApp extends App {
     def convertToTaggedData(data: RawData) = data
     def convertToBlingData(data: Map[String, Any]) = data
 
-    val dataHandler = BlingApp.this.dataHandler
-    var tagDag = BlingApp.this.tagDag
+    val dataHandler = SampleApp.this.dataHandler
+    var tagDag = SampleApp.this.tagDag
 
-    val tagDagFileName = BlingApp.this.tagDagFileName
-    val blingId = BlingApp.this.blingId
+    val tagDagFileName = SampleApp.this.tagDagFileName
+    val blingId = SampleApp.this.blingId
   }
 
   def runLoop: Unit = {
@@ -77,11 +77,15 @@ object BlingApp extends App {
       map( column => readLine("%s: ", column.fieldName) )
     val dataKeys = console.dataHandler.dataTemplate.columns.map( _.fieldName ).filter( _ != console.blingId )
     val dataMap = Map( (dataKeys zip dataValues):_* )
-    val tags = readLine("Insert tags separated by commas: ").split(""",""")
-    println(tags)
+    val tags = readLine("Insert tags separated by commas: ").split(",")
+    console.loadData(TaggedData(dataMap, tags.toSet))
   }
 
-  def extractData = Unit
+  def extractData = {
+    val tag = readLine("Please enter tag you want to extract data for: ")
+    console.refreshTagDag()
+    println(console.extractData(AllColumns, NoCriterion, tag))
+  }
 
   runLoop
 }

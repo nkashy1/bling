@@ -70,3 +70,6 @@ crashlytics-build.properties
 
 # .conf files
 src/test/resources/application.conf
+
+# Stupid target stuff
+*.sh
