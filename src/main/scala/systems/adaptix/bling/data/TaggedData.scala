@@ -6,6 +6,7 @@ package systems.adaptix.bling.data
  *
  * @param data An actual data point to be loaded into bling, passed as key-value pairs.
  * @param tags A set containing the tags that apply to the data point.
+ *
  * Created by nkashyap on 6/5/15.
  */
 case class TaggedData(data: Map[String, Any], tags: Set[String])
