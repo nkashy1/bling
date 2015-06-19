@@ -39,7 +39,29 @@ sealed trait FieldInfo {this: FieldProperty =>
   }
 }
 
+/**
+ * A PlainFieldInfo object represents a regular column in a table.
+ * @param fieldName The name of the column.
+ * @param fieldType The type of data that the column will hold.
+ */
 final case class PlainFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PlainField
+
+/**
+ * A NotNullFieldInfo object represents a column in a table which is allowed to contain no NULL values.
+ * @param fieldName The name of the column.
+ * @param fieldType The type of data that the column will hold.
+ */
 final case class NotNullFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with NotNullField
+
+/**
+ * A PrimaryFieldInfo object represents a column meant to hold a primary key for a table.
+ * @param fieldName The name of the column.
+ * @param fieldType The type of data that the column will hold.
+ */
 final case class PrimaryFieldInfo(fieldName: String, fieldType: String) extends FieldInfo with PrimaryKey with NotNullField
+
+/**
+ * An AutoIdFieldInfo object represents a column in a table which is an automatically generated primary key.
+ * @param fieldName
+ */
 final case class AutoIdFieldInfo(fieldName: String) extends FieldInfo with PrimaryKey with SerialField with NotNullField
