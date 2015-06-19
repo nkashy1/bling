@@ -3,6 +3,12 @@ package systems.adaptix.bling.data
 import scalikejdbc._
 
 /**
+ * DataHandlers implement the nuts and the bolts of actually loading data into and extracting data from a bling data store. As such,
+ * a DataHandler requires three parameters to be passed to it at instantiation:
+ * 1. A [[systems.adaptix.bling.data.TableTemplate]] which specifies the name and schema of the table which will store the data to be loaded into the data store.
+ * 2. A [[systems.adaptix.bling.data.TagTableTemplate]] which specifies the name and schema of the table in which the tags are to be stored.
+ * 3. An implicit [[scalikejdbc.DBSession]] through which the DataHandler communicates with the database.
+ *
  * Created by nkashyap on 6/5/15.
  */
 class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTemplate)(implicit session: scalikejdbc.DBSession) {
@@ -25,6 +31,10 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
   createTableIfItDoesNotExist(tagsTemplate)
 
   var tagIndexers = Map[String, IdTableTemplate]()
+
+  /**
+   * Refreshes the tag indexer information stored in the DataHandler to reflect the state of the table in the database which stores tags.
+   */
   def loadTagIndexers = {
     /*
      TODO: Right now, this is creating new IdTableTemplates for each of the tags, regardless of whether they were previous registered or not. In the future, we may want to introduce a check for when a new IdTableTemplate is required.
@@ -35,6 +45,10 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
   loadTagIndexers
   tagIndexers.foreach( pair => createTableIfItDoesNotExist(pair._2) )
 
+  /**
+   * Loads data into the DataHandler's implicit session.
+   * @param input A [[systems.adaptix.bling.data.TaggedData]] object representing the data to be loaded.
+   */
   def insert(input: TaggedData) = {
     val rowId = insertDataAndGetId(input.data)
     val relevantTagIndexers = input.tags.map(getIdTableTemplate)
@@ -68,10 +82,22 @@ class DataHandler(val dataTemplate: TableTemplate, val tagsTemplate: TagTableTem
     sql"INSERT INTO ${tagIndexer.sqlTableName} (${columnSql}) VALUES (?)".bind(id).update().apply()
   }
 
+  /**
+   * Checks whether given data is consistent with dataTemplate schema.
+   * @param input A [[systems.adaptix.bling.data.TaggedData]] object which the caller would like to check for consistency with the data table schema.
+   * @return true if the input is consistent with the data table schema and false otherwise.
+   */
   def validateFields(input: TaggedData): Boolean = {
     (input.data.keySet subsetOf columnNameSet) && (requiredFieldNameSet subsetOf input.data.keySet)
   }
 
+  /**
+   * Selects data from the DataHandler's implicit session.
+   * @param targetColumns A [[systems.adaptix.bling.data.DesiredColumns]] object specifying the columns the caller would like to select.
+   * @param criterion A [[systems.adaptix.bling.data.SelectionCriterion]] object representing the selection constraints.
+   * @param tableTemplate The [[systems.adaptix.bling.data.TableTemplate]] of the table from which data is to be selected. This defaults to the dataTemplate member of the DataHandler.
+   * @return
+   */
   def select(targetColumns: DesiredColumns, criterion: SelectionCriterion = NoCriterion, tableTemplate: TableTemplate = dataTemplate): Seq[Map[String, Any]] = {
     val columnsSql = SQLSyntax.createUnsafely(s"${targetColumns.asString}")
 
