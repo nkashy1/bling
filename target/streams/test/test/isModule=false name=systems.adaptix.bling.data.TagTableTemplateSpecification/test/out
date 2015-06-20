@@ -1,9 +1,0 @@
-[0m[[0minfo[0m] [0mTagTableTemplateSpecification[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mA TagTableTemplate is a TableTemplate specially designed to represent a column of tags.[0m
-[0m[[0minfo[0m] [0m  [32m+[0m The single field in such a table is a primary key, meaning that there are no repetitions of tags.[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mTotal for specification TagTableTemplateSpecification[0m
-[0m[[0minfo[0m] [0m[36mFinished in 2 ms[0m[0m
-[0m[[0minfo[0m] [0m[36m[0m[36m1 example, 0 failure, 0 error[0m[0m
-[0m[[0minfo[0m] [0m[0m
