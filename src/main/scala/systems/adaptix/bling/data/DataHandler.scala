@@ -7,7 +7,7 @@ import scalikejdbc._
  * a DataHandler requires three parameters to be passed to it at instantiation:
  * 1. A [[systems.adaptix.bling.data.TableTemplate]] which specifies the name and schema of the table which will store the data to be loaded into the data store.
  * 2. A [[systems.adaptix.bling.data.TagTableTemplate]] which specifies the name and schema of the table in which the tags are to be stored.
- * 3. An implicit [[scalikejdbc.DBSession]] through which the DataHandler communicates with the database.
+ * 3. An implicit scalikejdbc.DBSession through which the DataHandler communicates with the database.
  *
  * Created by nkashyap on 6/5/15.
  */

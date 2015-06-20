@@ -16,7 +16,7 @@ import scala.io.Source
  * 3. A convertToTaggedData abstract method to be implemented, which converts RawData into TaggedData.
  * 4. A BlingData abstract type to be specified, which specifies the format in which bling is expected to present data to its users.
  * 5. A convertToBlingData abstract method to be implemented, which converts key-value pairs of data extracted from the database into BlingData.
- * 6. An implicit [[scalikejdbc.DBSession]] to be defined in the scope of instantiation.
+ * 6. An implicit scalikejdbc.DBSession to be defined in the scope of instantiation.
  * 7. A dataHandler abstract value to be specified, which is an object of type derived from [[systems.adaptix.bling.data.DataHandler]].
  * 8. A tagDag abstract variable to be specified, which is an object of type derived from [[systems.adaptix.bling.tags.TagDag]].
  * 9. A tagDagFileName abstract value to be specified, which is a String containing the location of a file on the filesystem which is meant to store an up-to-date copy of the serialization of the tagDag member.
