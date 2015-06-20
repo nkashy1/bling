@@ -1,0 +1,14 @@
+[0m[[0minfo[0m] [0mDataHandlerSpecification[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mThe DataHandler class allows TaggedData to be loaded into and extracted from the table specified by a given TableTemplate in a database, with the tags being registered in a table specified by a TagTableTemplate.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The dataTemplate and tagsTemplate TableTemplates specifying the schema of the data table and the tags table respectively are passed at instantiation.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m With a fresh database, the DataHandler object's tagIndexers method should be empty.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The insert method loads data into the specified data table and adds the generated ID for the given data to the relevant tag indexers.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m validateFields is a utility method that can be used to check if a given TaggedData object is appropriate for absorption in terms of the fields that it inserts values into.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The loadTagIndexers method allows the tagIndexers member variable to be updated to reflect independent updates to the database.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The select method allows data to be extracted from a given table, which is the data table by default.[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mTotal for specification DataHandlerSpecification[0m
+[0m[[0minfo[0m] [0m[36mFinished in 186 ms[0m[0m
+[0m[[0minfo[0m] [0m[36m[0m[36m7 examples, 0 failure, 0 error[0m[0m
+[0m[[0minfo[0m] [0m[0m

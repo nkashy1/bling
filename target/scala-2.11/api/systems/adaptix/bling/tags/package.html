@@ -1,0 +1,206 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>tags - systems.adaptix.bling.tags</title>
+          <meta name="description" content="tags - systems.adaptix.bling.tags" />
+          <meta name="keywords" content="tags systems.adaptix.bling.tags" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'systems.adaptix.bling.tags.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="systems">systems</a>.<a href="../../package.html" class="extype" name="systems.adaptix">adaptix</a>.<a href="../package.html" class="extype" name="systems.adaptix.bling">bling</a></p>
+        <h1>tags</h1><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">tags</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="systems.adaptix.bling.tags.JsonTagDagSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="JsonTagDagSerializerextendsTagDagSerializer"></a>
+      <a id="JsonTagDagSerializer:JsonTagDagSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="JsonTagDagSerializer.html"><span class="name">JsonTagDagSerializer</span></a><span class="result"> extends <a href="TagDagSerializer.html" class="extype" name="systems.adaptix.bling.tags.TagDagSerializer">TagDagSerializer</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@JsonTagDagSerializerextendsTagDagSerializer" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by nkashyap on 6/10/15.</p>
+    </li><li name="systems.adaptix.bling.tags.TagDag" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TagDagextendsRootedDag"></a>
+      <a id="TagDag:TagDag"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="TagDag.html"><span class="name">TagDag</span></a><span class="result"> extends <a href="graph/RootedDag.html" class="extype" name="systems.adaptix.bling.tags.graph.RootedDag">RootedDag</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@TagDagextendsRootedDag" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by nkashyap on 5/18/15.</p>
+    </li><li name="systems.adaptix.bling.tags.TagDagSerializationInfo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TagDagSerializationInfoextendsProductwithSerializable"></a>
+      <a id="TagDagSerializationInfo:TagDagSerializationInfo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TagDagSerializationInfo.html"><span class="name">TagDagSerializationInfo</span></a><span class="params">(<span name="universalTag">universalTag: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="parentsAndChildren">parentsAndChildren: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@TagDagSerializationInfoextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by nkashyap on 6/10/15.</p>
+    </li><li name="systems.adaptix.bling.tags.TagDagSerializer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TagDagSerializerextendsAnyRef"></a>
+      <a id="TagDagSerializer:TagDagSerializer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TagDagSerializer.html"><span class="name">TagDagSerializer</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@TagDagSerializerextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by nkashyap on 6/9/15.</p>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="systems.adaptix.bling.tags.TagDag" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TagDag"></a>
+      <a id="TagDag:TagDag"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TagDag$.html"><span class="name">TagDag</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@TagDag" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="systems.adaptix.bling.tags.graph" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="graph"></a>
+      <a id="graph:graph"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="graph/package.html"><span class="name">graph</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#systems.adaptix.bling.tags.package@graph" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

@@ -46,7 +46,3 @@ com_crashlytics_export_strings.xml crashlytics.properties crashlytics-build.prop
 
 # .conf files
 src/test/resources/application.conf
-
-# Stupid target stuff
-*.sh
-target*

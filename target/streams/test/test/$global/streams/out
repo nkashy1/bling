@@ -1,0 +1,29 @@
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.SelectionCriterionDbTest, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.SelectionCriterionSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.tags.graph.RootedDagSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.IdTableTemplateSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.DataHandlerSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.tags.graph.DagVertexSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.tags.TagDagSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.TableTemplateSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.TagTableTemplateSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.tags.JsonTagDagSerializerSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.DbManipulationTest, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.BlingConsoleSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mRunning TaskDef(systems.adaptix.bling.data.FieldInfoSpecification, specs2 Specification fingerprint, false, [SuiteSelector])[0m
+[0m[[0mdebug[0m] [0mSummary for specs2 not available.[0m
+[0m[[0minfo[0m] [0mPassed: Total 111, Failed 0, Errors 0, Passed 111, Pending 2[0m
+[0m[[0mdebug[0m] [0mPassed tests:[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.BlingConsoleSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.IdTableTemplateSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.FieldInfoSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.tags.graph.DagVertexSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.tags.JsonTagDagSerializerSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.DataHandlerSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.SelectionCriterionDbTest[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.TableTemplateSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.tags.graph.RootedDagSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.DbManipulationTest[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.TagTableTemplateSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.data.SelectionCriterionSpecification[0m
+[0m[[0mdebug[0m] [0m	systems.adaptix.bling.tags.TagDagSpecification[0m
