@@ -6,8 +6,11 @@ import scalikejdbc._
  * Created by nkashyap on 6/7/15.
  */
 
-/* TODO: EXISTS queries */
+// TODO: EXISTS queries
 
+/**
+ *
+ */
 sealed trait SelectionCriterion {
   // TODO: There could be an issue here about how values are bound. Depends on the SQL parser. If parsing is done left-to-right, then what this method is doing now with compound constraints is alright.
   def generateConstraints: (String, Seq[Any])
