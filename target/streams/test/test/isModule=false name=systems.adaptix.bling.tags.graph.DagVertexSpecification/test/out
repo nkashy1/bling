@@ -1,0 +1,19 @@
+[0m[[0minfo[0m] [0mDagVertexSpecification[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0m[32m+[0m A DagVertex is instantiated with a string which serves as its label.[0m
+[0m[[0minfo[0m] [0m[32m+[0m DagVertex instances are identified by reference.[0m
+[0m[[0minfo[0m] [0m[32m+[0m A DagVertex instance has a "children" variable, which is of type mutable.Set, and is set to an empty set of DagVertices at instantiation.[0m
+[0m[[0minfo[0m] [0m[32m+[0m Children may be added individually to a DagVertex using its "addChild" method.[0m
+[0m[[0minfo[0m] [0m[32m+[0m A set of vertices may be passed to the "addChildren" method to perform a batch addition.[0m
+[0m[[0minfo[0m] [0m[32m+[0m The "hasChild" method of a DagVertex tests if a given DagVertex is one of its children.[0m
+[0m[[0minfo[0m] [0m[32m+[0m The "hasChildren" method of a DagVertex tests if all the vertices in a given set are its children.[0m
+[0m[[0minfo[0m] [0m[32m+[0m The "removeChild" method of a DagVertex removes a given vertex from its list of children if it was a child in the first place. Else it does nothing.[0m
+[0m[[0minfo[0m] [0m[32m+[0m The "removeChildren" method performs a batch deletion of children present in a given set of vertices.[0m
+[0m[[0minfo[0m] [0m[32m+[0m A DagVertex also has the member variables "onStack", "index" and "backLink", of types Boolean, Option[Int], and Option[Int] respectively, which are used to validate acyclicity. They are set to None at instantiation.[0m
+[0m[[0minfo[0m] [0m[32m+[0m A DagVertex can be instantiated by calling the DagVertex companion object.[0m
+[0m[[0minfo[0m] [0m[32m+[0m The DagVertex companion object also allows for the instantiation of a DagVertex with a given set of children.[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mTotal for specification DagVertexSpecification[0m
+[0m[[0minfo[0m] [0m[36mFinished in 158 ms[0m[0m
+[0m[[0minfo[0m] [0m[36m[0m[36m12 examples, 0 failure, 0 error[0m[0m
+[0m[[0minfo[0m] [0m[0m

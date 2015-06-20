@@ -1,0 +1,31 @@
+[0m[[0minfo[0m] [0mRootedDagSpecification[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0m[32m+[0m A RootedDag is instantiated with a DagVertex which is its distinguished root.[0m
+[0m[[0minfo[0m] [0mThe RootedDag "stronglyConnectedComponents" method returns a set containing the strongly connected components of the RootedDag instance.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The strongly connected components are represented by the set of their vertices.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m After the method call, each vertex in the RootedDag should have its state refreshed so that its index and lowLink parameters are once again None.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 1: Root and one child. Two strongly connected components.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 2: Root and one child with a back link from the child to the root. One strongly connected component.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 3: Vertices A, B, C, D, E. A is roote with children B and C. B has D and E as children. Five strongly connected components.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 4: Vertices A, B, C, D, E. A is root, with children B and C. B has D and E as children. D connects back to A. Three strongly connected components.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 5: Vertices A, B, C, D, E. A is root with children B and C, B has D and E as children. D has C as a child. C has A as a child. Two strongly connected components.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 6: Vertices A, B, C, D, E. A is root. A has B and C as children. B has C and D as children. C has D and E as children. D has C and B as children. Three strongly connected components.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Three strongly connected components.[0m
+[0m[[0minfo[0m] [0mThe "isAcyclic" method tests whether the graph is indeed acyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 0: Only one vertex. Acyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 1: Root and one child. Acyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 2: Root and one child with a back link from the child to the root. Cyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 3: Vertices A, B, C, D, E. A is root, with children B and C. B has D and E as children. Acyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 4: Vertices A, B, C, D, E. A is root, with children B and C. B has D and E as children. D connects back to A. Cyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 5: Vertices A, B, C, D, E. A is root with children B and C, B has D and E as children. D has C as a child. C has A as a child. Cyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 6: Vertices A, B, C, D, E. A has B and C as children. B has C and D as children. C has D and E as children. D has C and B as children. Cyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 7: Vertices A-G. A is root with B and F as children. B as C and D as children. C has E as a child. D has C and E as children. E has D as a child. F has G as a child. G has A as a child. Cyclic.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m Example 8: Root, two children, and a grandchild common to the two children. Acyclic.[0m
+[0m[[0minfo[0m] [0mThe RootedDag companion object may be used to instantiate a new RootedDag.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m It allows instantiation without the use of "new".[0m
+[0m[[0minfo[0m] [0m  [32m+[0m It also allows instantiation of a RootedDag with root having a specified label.[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mTotal for specification RootedDagSpecification[0m
+[0m[[0minfo[0m] [0m[36mFinished in 124 ms[0m[0m
+[0m[[0minfo[0m] [0m[36m[0m[36m21 examples, 0 failure, 0 error[0m[0m
+[0m[[0minfo[0m] [0m[0m

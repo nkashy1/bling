@@ -1,0 +1,15 @@
+[0m[[0minfo[0m] [0mBlingConsoleSpecification[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mBlingConsole is the only point of contact between bling and its users. As such, it exposes a variety of functionality.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The loadData method loads data into the database.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The refreshTagDag method refreshes the tagDag member of console so that it reflects the most recent state of the database.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The extractData method extracts data from the database.[0m
+[0m[[0minfo[0m] [0m  [32m+[0m extractData also accepts as its third, tag argument tags in the tagDag which are not necessarily present in the tags table of the database. The extraction mode argument specifies whether the query should return the data point satisfying the given criterion which are tagged with AT LEAST ONE of the descendants of the given tag (DisjunctiveMode) or ALL its descendants (ConjunctiveMode).[0m
+[0m[[0minfo[0m] [0m  [32m+[0m The dataTags methods returns the Set of tags stored in the tags table of the database.[0m
+[0m[[0minfo[0m] [0m  [36m*[0m The saveTagDag method allows the current tagDag to be saved to a specified file. PENDING[0m
+[0m[[0minfo[0m] [0m  [36m*[0m The loadTagDag method allows the current tagDag to be replaced by the TagDag stored in the specified file. PENDING[0m
+[0m[[0minfo[0m] [0m[0m
+[0m[[0minfo[0m] [0mTotal for specification BlingConsoleSpecification[0m
+[0m[[0minfo[0m] [0m[36mFinished in 10 ms[0m[0m
+[0m[[0minfo[0m] [0m[36m[0m[36m8 examples, 0 failure, 0 error, 2 pending[0m[0m
+[0m[[0minfo[0m] [0m[0m
