@@ -1,9 +1,0 @@
-[0m[[0minfo[0m] [0mIdTableTemplateSpecification[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mAn IdTableTemplate represents a table which consists of a single column and which stores automatically generated IDs.[0m
-[0m[[0minfo[0m] [0m  [32m+[0m The single field in a table represented by an IdTableTemplate must be a primary key.[0m
-[0m[[0minfo[0m] [0m[0m
-[0m[[0minfo[0m] [0mTotal for specification IdTableTemplateSpecification[0m
-[0m[[0minfo[0m] [0m[36mFinished in 97 ms[0m[0m
-[0m[[0minfo[0m] [0m[36m[0m[36m1 example, 0 failure, 0 error[0m[0m
-[0m[[0minfo[0m] [0m[0m
