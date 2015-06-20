@@ -1,13 +1,23 @@
 # Created by https://www.gitignore.io
 
 ### Scala ###
-*.class *.log
+*.class
+*.log
 
 # sbt specific
-.cache .history .lib/ dist/* target/ lib_managed/ src_managed/ project/boot/ project/plugins/project/
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
 
 # Scala-IDE specific
-.scala_dependencies .worksheet
+.scala_dependencies
+.worksheet
 
 
 ### Intellij ###
@@ -28,7 +38,8 @@
 # Mongo Explorer plugin: .idea/mongoSettings.xml
 
 ## File-based project format:
-*.ipr *.iws
+*.ipr
+*.iws
 
 ## Plugin-specific files:
 
@@ -42,7 +53,9 @@
 atlassian-ide-plugin.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml crashlytics.properties crashlytics-build.properties
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
 
 # .conf files
 src/test/resources/application.conf
