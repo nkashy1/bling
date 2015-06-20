@@ -1,7 +1,7 @@
 package systems.adaptix
 
 /**
- * bling
+ * bling API
  */
 package object bling {
 
