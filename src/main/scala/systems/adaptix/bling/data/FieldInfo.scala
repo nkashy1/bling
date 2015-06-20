@@ -33,9 +33,13 @@ sealed trait NotNullField extends FieldProperty
 
 /**
  * A FieldInfo object represents a column of a table in a database. It is a union of the following types:
+ *
  * 1. PlainFieldInfo
+ *
  * 2. NotNullFieldInfo
+ *
  * 3. PrimaryFieldInfo
+ *
  * 4. AutoIdFieldInfo
  *
  * FieldInfo objects expose the name of the fields they represent as well as the type of field via their fieldName and fieldType members.

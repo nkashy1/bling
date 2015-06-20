@@ -7,18 +7,30 @@ import scalikejdbc._
 /**
  * A SelectionCriterion represents a constraint to be imposed on a selection from a given table in a database. This corresponds to the argument to an SQL WHERE clause.
  * SelectionCriteria should be constructed using one of the following objects:
- * 1. [[systems.adaptix.bling.data.Eq]]
- * 2. [[systems.adaptix.bling.data.Ne]]
- * 3. [[systems.adaptix.bling.data.Lt]]
- * 4. [[systems.adaptix.bling.data.Le]]
- * 5. [[systems.adaptix.bling.data.Gt]]
- * 6. [[systems.adaptix.bling.data.Ge]]
- * 7. [[systems.adaptix.bling.data.Null]]
- * 8. [[systems.adaptix.bling.data.NotNull]]
- * 9. [[systems.adaptix.bling.data.In]]
- * 10. [[systems.adaptix.bling.data.And]]
- * 11. [[systems.adaptix.bling.data.Or]]
- * 12. [[systems.adaptix.bling.data.Not]]
+ *
+ * 1. [[systems.adaptix.bling.data.Eq Eq]]
+ *
+ * 2. [[systems.adaptix.bling.data.Ne Ne]]
+ *
+ * 3. [[systems.adaptix.bling.data.Lt Lt]]
+ *
+ * 4. [[systems.adaptix.bling.data.Le Le]]
+ *
+ * 5. [[systems.adaptix.bling.data.Gt Gt]]
+ *
+ * 6. [[systems.adaptix.bling.data.Ge Ge]]
+ *
+ * 7. [[systems.adaptix.bling.data.Null Null]]
+ *
+ * 8. [[systems.adaptix.bling.data.NotNull NotNull]]
+ *
+ * 9. [[systems.adaptix.bling.data.In In]]
+ *
+ * 10. [[systems.adaptix.bling.data.And And]]
+ *
+ * 11. [[systems.adaptix.bling.data.Or Or]]
+ *
+ * 12. [[systems.adaptix.bling.data.Not Not]]
  *
  * Alternatively, if you need to specify through a method argument that there are no selection criteria, please pass the [[systems.adaptix.bling.data.NoCriterion]] object.
  *
@@ -140,14 +152,14 @@ final case class NullCriterion(isNull: Boolean, column: String) extends Selectio
 
 /**
  * In generates a SelectionCriterion representing the constraint that the value in a given column be present in a specified selection
- * of columns from a given table (which may in turn be subject to its own [[systems.adaptix.bling.data.SelectionCriterion]]).
+ * of columns from a given table (which may in turn be subject to its own [[systems.adaptix.bling.data.SelectionCriterion SelectionCriterion]]).
  */
 object In {
   /**
    * @param column The column of the outer table the value of which should be in the inner selection.
    * @param tableName The name of the table from which the inner selection is being made.
    * @param tableColumns The column in the inner selection.
-   * @param tableCriterion The [[systems.adaptix.bling.data.SelectionCriterion]] for the inner selection.
+   * @param tableCriterion The [[systems.adaptix.bling.data.SelectionCriterion SelectionCriterion]] for the inner selection.
    * @return The SelectionCriterion representing the specified constraint.
    */
   // TODO: The column argument of the apply method should really be of type DesiredColumns (and should accept multiple columns).
@@ -159,7 +171,7 @@ object In {
  * @param column The column of the outer table the value of which should be in the inner selection.
  * @param tableName The name of the table from which the inner selection is being made.
  * @param tableColumns The column in the inner selection.
- * @param tableCriterion The [[systems.adaptix.bling.data.SelectionCriterion]] for the inner selection.
+ * @param tableCriterion The [[systems.adaptix.bling.data.SelectionCriterion SelectionCriterion]] for the inner selection.
  */
 final case class InCriterion(column: String, tableName: String, tableColumns: DesiredColumns, tableCriterion: SelectionCriterion) extends SelectionCriterion {
   def generateConstraints = tableCriterion match {
@@ -173,7 +185,7 @@ final case class InCriterion(column: String, tableName: String, tableColumns: De
 
 /**
  * An object of this type represents a collection of columns which one wishes to select from a table in a database.
- * A DesiredColumns objects is either the [[systems.adaptix.bling.data.AllColumns]] singleton object or it is of type [[systems.adaptix.bling.data.SomeColumns]].
+ * A DesiredColumns objects is either the [[systems.adaptix.bling.data.AllColumns AllColumns]] singleton object or it is of type [[systems.adaptix.bling.data.SomeColumns SomeColumns]].
  */
 sealed trait DesiredColumns {
   def asString = this match {
@@ -196,7 +208,7 @@ final case class SomeColumns(columns: Seq[String]) extends DesiredColumns
 
 /**
  * Constructs SelectionCriteria which are either conjunctions or disjunctions of other SelectionCriteria.
- * The two objects of Junction type are [[systems.adaptix.bling.data.And]] and [[systems.adaptix.bling.data.Or]].
+ * The two objects of Junction type are [[systems.adaptix.bling.data.And And]] and [[systems.adaptix.bling.data.Or Or]].
  */
 sealed trait Junction {
   /**
@@ -216,12 +228,12 @@ sealed trait Junction {
 }
 
 /**
- * Conjunctive [[systems.adaptix.bling.data.Junction]].
+ * Conjunctive [[systems.adaptix.bling.data.Junction Junction]].
  */
 object And extends Junction
 
 /**
- * Disjunction [[systems.adaptix.bling.data.Junction]].
+ * Disjunction [[systems.adaptix.bling.data.Junction Junction]].
  */
 object Or extends Junction
 
