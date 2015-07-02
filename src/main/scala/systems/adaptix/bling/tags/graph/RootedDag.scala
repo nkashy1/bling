@@ -7,6 +7,11 @@ import scala.collection.mutable.Stack
  * Created by nkashyap on 5/17/15.
  */
 class RootedDag(val root: DagVertex) {
+  /**
+   * Checks whether the directed graph with the given root is acyclic.
+   *
+   * @return true if the graph is acyclic, false otherwise.
+   */
   def isAcyclic: Boolean = {
     val components = stronglyConnectedComponents
     components.filter(_.size > 1).size == 0
@@ -70,6 +75,9 @@ class RootedDag(val root: DagVertex) {
   }
 }
 
+/**
+ * Companion object to RootedDag. Allows creation of a RootedDag with simply the intended label of its root rather than the root vertex itself.
+ */
 object RootedDag {
   def apply(root: DagVertex) = new RootedDag(root)
   def apply(rootLabel: String) = new RootedDag(DagVertex(rootLabel))

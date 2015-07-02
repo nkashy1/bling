@@ -6,6 +6,10 @@ import graph.{RootedDag, DagVertex}
 import scala.collection.mutable
 
 /**
+ * A TagDag is an acyclic, rooted, directed graph in which every vertex is labelled by a Tag, which is simply a String.
+ *
+ * The universalTag is the Tag corresponding to the root of the TagDag.
+ *
  * Created by nkashyap on 5/18/15.
  */
 class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)) {
@@ -13,8 +17,22 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
 
   val tagVertices = mutable.Map[Tag, DagVertex](universalTag -> root)
 
+  /**
+   * Checks whether the given Tag has previously been registered in the TagDag.
+   *
+   * @param tag
+   * @return true if the Tag was previously registered, false otherwise.
+   */
   def hasTag(tag: Tag) = tagVertices.keys exists(_ == tag)
 
+  /**
+   * Inserts a vertex labelled with the given Tag into the TagDag.
+   *
+   * @param tag The tag to be inserted.
+   * @param parents The tags which are to be linked to the new tag as parents.
+   * @param children The tags which are to be linked to the new tag as children.
+   * @return
+   */
   def insertTag(tag: Tag, parents: Set[Tag] = Set(universalTag), children: Set[Tag] = Set()) = {
     assertHasNotTag(tag)
     parents foreach { assertHasTag }
@@ -78,6 +96,12 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     root removeChild targetVertex
   }
 
+  /**
+   * Creates an directed edge from parentTag to childTag as long as this does not make the graph cyclic.
+   *
+   * @param parentTag
+   * @param childTag
+   */
   def link(parentTag: Tag, childTag: Tag) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
@@ -91,6 +115,12 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
+  /**
+   * Deletes an edge from parentTag to childTag as long as this does not disconnect make the child inaccessible from the root.
+   *
+   * @param parentTag
+   * @param childTag
+   */
   def unlink(parentTag: Tag, childTag: Tag) = {
     assertHasTag(parentTag)
     assertHasTag(childTag)
@@ -106,6 +136,11 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
     }
   }
 
+  /**
+   * Checks whether every vertex of the TagDag is accessible from its root.
+   *
+   * @return true if every registered Tag is a descendant of root, false otherwise.
+   */
   def validateUniversality = {
     val descendantsOfRoot = descendants(universalTag)
     tagVertices.keys.forall( descendantsOfRoot contains _ )
@@ -113,6 +148,7 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
 
   /**
    * Returns a sequence containing the tags descendant from the given tag in order of breadth-first trarversal.
+   *
    * @param tag
    * @return Seq[Tag]
    */
@@ -135,16 +171,29 @@ class TagDag(val universalTag: String) extends RootedDag(DagVertex(universalTag)
   }
 
   // TODO: Get rid of assertHasTag. Would be better to handle with a try-catch statement. assertHasNotTag is still useful.
+  /**
+   * Throws exception if given Tag IS NOT registered in the TagDag.
+   *
+   * @param tag
+   */
   def assertHasTag(tag: Tag) = {
     if ( !hasTag(tag) )
       throw new IllegalArgumentException("Tag does not exist: " + tag)
   }
+
+  /**
+   * Throws exception if given Tag IS registered in the TagDag.
+   * @param tag
+   */
   def assertHasNotTag(tag: Tag) = {
     if ( hasTag(tag) )
       throw new IllegalArgumentException("Tag already exists: " + tag)
   }
 }
 
+/**
+ * Companion object to TagDag class.
+ */
 object TagDag {
   def apply(universalTag: String) = new TagDag(universalTag)
 }

@@ -9,6 +9,21 @@ import scala.collection.mutable.Queue
 import graph._
 
 /**
+ * A JSON serializer of TagDags.
+ *
+ * The format for the associated serialization is as follows:
+ *
+ * {
+ *  "universalTag": <universalTag>,
+ *  "parentsAndChildren": {
+ *   <tag_1>: [<tag_1_child_1>, <tag_1_child_2>, ..., <tag_1_child_n1>],
+ *   .
+ *   .
+ *   .
+ *   <tag_m>: [<tag_m_child_1>, <tag_m_child_2>, ..., <tag_m_child_nm>]
+ *  }
+ * }
+ *
  * Created by nkashyap on 6/10/15.
  */
 trait JsonTagDagSerializer extends TagDagSerializer {
