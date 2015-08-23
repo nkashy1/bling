@@ -55,7 +55,7 @@ Queries are constructed using *SelectionCriterion* objects. *SelectionCriterion*
 For more information:
 
 1. You can generate API documentation for the project by cloning the repository and running `$ sbt doc` from the top-level *bling* directory. The documentation will be generated in `<path-to-bling>/target/scala-2.11/api/`
-2. The *specs2* specifications serve as examples of how* *to use the different components of *bling*.
+2. The *specs2* specifications serve as examples of *how* to use the different components of *bling*.
 3. The repository contains a *SampleApp* which you can run to see *bling* in action at a very primitive level and which you can browse the code of to see how to initialize a *BlingConsole*.
 
 
